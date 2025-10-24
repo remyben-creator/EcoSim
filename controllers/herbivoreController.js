@@ -3,7 +3,7 @@ const Animal = require("../models/Animal");
 const Plant = require("../models/Plant");
 const { createAnimal, move, defecate, ageOneTickAll } = require("./animalController");
 const { removePlant } = require("./plantController");
-const { logAction } = require("../utils/logger");
+const { logActionFrontend } = require("../services/loggerService");
 
 // rabbit eats grass
 async function eatPlant(rabbitId, plantId, amount = 1) {
@@ -18,7 +18,7 @@ async function eatPlant(rabbitId, plantId, amount = 1) {
     else await plant.save();
 
     rabbit.energy += amount;
-    logAction("Rabbit", `${rabbit.name} gained ${amount} energy`);
+    logActionFrontend("Rabbit", `${rabbit.name} gained ${amount} energy`);
     return rabbit.save()
 }
 
@@ -37,15 +37,7 @@ async function eatPlantAll() {
     }
 }
 
-// remove function for when eaten or dead
-async function removeHerbivore(animalId) {
-    const rabbit = await Animal.findById(animalId);
-    logAction("Rabbit", `${rabbit.name} died`)
-    return await Animal.findByIdAndDelete(animalId);
-}
-
 module.exports = { 
-    removeHerbivore,
     eatPlantAll, 
     createAnimal, 
     move, 

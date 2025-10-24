@@ -1,6 +1,6 @@
 // controllers/animalController.js
 const Animal = require("../models/Animal");
-const { logAction } = require("../utils/logger");
+const { logActionFrontend } = require("../services/loggerService");
 
 // create a new animal (of any type)
 async function createAnimal(name, species, position) {
@@ -22,7 +22,6 @@ async function createAnimal(name, species, position) {
     });
 
     await animal.save();
-    console.log(`Created ${species} '${animal.name}' at (${position.x}, ${position.y})`);
     return animal;    
 }
 
@@ -44,15 +43,26 @@ async function defecate(animalId) {
     return true;
 }
 
+// remove function for when eaten or dead
+async function removeAnimal(animalId) {
+    const animal = await Animal.findById(animalId);
+    logActionFrontend(`${animal.species}`, `${animal.name} died`)
+    return await Animal.findByIdAndDelete(animalId);
+}
+
 async function ageOneTick(animalId, energyLoss = 1) {
     const animal = await Animal.findById(animalId);
     if (!animal) return null;
 
     animal.age += 1;
     animal.energy -= energyLoss;
-    if (animal.energy <= 0) animal.alive = false;
+    logActionFrontend(`${animal.species}`, `${animal.name} lost ${energyLoss} energy`);
 
-    logAction(`${animal.species}`, `${animal.name} lost ${energyLoss} energy`);
+    if (animal.energy <= 0) {
+        animal.alive = false;
+        await removeAnimal(animalId);
+    }
+
     return animal.save();
 }
 
@@ -68,4 +78,5 @@ module.exports = {
     move,
     defecate,
     ageOneTickAll,
+    removeAnimal,
 }

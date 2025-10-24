@@ -62,7 +62,7 @@ export default function GridBox({ plants, animals, width = 3, height = 3 }) {
       fontFamily: "monospace", 
       fontSize: `${fontSize}px`, 
       padding: "1rem", 
-      color: "black", 
+      color: "#059669", 
       borderRadius: "8px", 
       boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", 
       height: "50rem", 

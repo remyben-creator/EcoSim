@@ -1,8 +1,8 @@
 // controllers/carnivoreController.js
 const Animal = require("../models/Animal");
 const { createAnimal, move, defecate, ageOneTickAll } = require("./animalController");
-const { removeHerbivore } = require("./herbivoreController");
-const { logAction } = require("../utils/logger");
+const { removeAnimal } = require("./animalController");
+const { logActionFrontend } = require("../services/loggerService");
 
 // fox hunts rabbits
 async function huntRabbit(foxId, rabbitId, energyGain = 5) {
@@ -13,10 +13,10 @@ async function huntRabbit(foxId, rabbitId, energyGain = 5) {
     rabbit.alive = false;
     await rabbit.save();
     logAction("Fox", `${fox.name} ate Rabbit ${rabbit.name}`);
-    await removeHerbivore(rabbitId);
+    await removeAnimal(rabbitId);
 
     fox.energy += energyGain;
-    logAction("Fox", `${fox.name} gained ${energyGain} energy`);
+    logActionFrontend("Fox", `${fox.name} gained ${energyGain} energy`);
     return fox.save();
 }
 

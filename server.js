@@ -5,7 +5,8 @@ const connectDB = require("./config/db");
 const http = require("http")
 const { Server } = require("socket.io")
 const { initEcosystem, resetDatabase, runTick } = require("./controllers/ecosystemController")
-const { setSocket } = require("./utils/logger");
+const { setGridSocketIO, sendGridUpdate } = require("./services/gridService");
+const { setLoggerSocketIO } = require("./services/loggerService");
 
 dotenv.config()
 const app = express();
@@ -25,7 +26,8 @@ const io = new Server(server, {
 });
 
 // give logger access to Socket.io
-setSocket(io);
+setGridSocketIO(io);
+setLoggerSocketIO(io);
 
 io.on("connection", (socket) => {
     console.log("Frontend connected for logs");
@@ -35,10 +37,12 @@ connectDB().then(async () => {
     await resetDatabase();
     await initEcosystem();
     await runTick();
+    await sendGridUpdate(); // initial state
 
     // run ticks periodically
     setInterval(async () => {
         await runTick();
+        await sendGridUpdate(); // send after each tick
     }, 5000);
 });
 
