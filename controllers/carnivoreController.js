@@ -12,7 +12,7 @@ async function huntRabbit(foxId, rabbitId, energyGain = 5) {
 
     rabbit.alive = false;
     await rabbit.save();
-    logAction("Fox", `${fox.name} ate Rabbit ${rabbit.name}`);
+    logActionFrontend("Fox", `${fox.name} ate Rabbit ${rabbit.name}`);
     await removeAnimal(rabbitId);
 
     fox.energy += energyGain;

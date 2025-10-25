@@ -1,5 +1,5 @@
 // pages/index.js
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import LogBox from "../components/LogBox";
 import GridBox from "../components/GridBox";
@@ -9,17 +9,21 @@ export default function Home() {
     const [logs, setLogs] = useState([]);
     const [plants, setPlants] = useState([]);
     const [animals, setAnimals] = useState([]);
+    const [gridSize, setGridSize] = useState(5);
+    const [socket, setSocket] = useState(null);
 
     useEffect(() => {
-        const socket = io("http://localhost:5000");
+        const socketInstance = io("http://localhost:5000");
+        setSocket(socketInstance);
 
-        socket.on("log", (msg) => setLogs(prev => [...prev, msg]));
-        socket.on("gridUpdate", ({ plants, animals }) => {
+        socketInstance.on("log", (msg) => setLogs(prev => [...prev, msg]));
+        socketInstance.on("gridUpdate", ({ plants, animals, gridSize }) => {
         setPlants(plants);
         setAnimals(animals);
+        setGridSize(gridSize);
         });
 
-        return () => socket.disconnect();
+        return () => socketInstance.disconnect();
     }, [])
 
     return (
@@ -41,9 +45,9 @@ export default function Home() {
           flexShrink: 0
         }}>
           <LogBox logs={logs} />
-          <ControlBox />
+          <ControlBox socket={socket}/>
         </div>
-        <GridBox plants={plants} animals={animals} />
+        <GridBox plants={plants} animals={animals} width={gridSize} height={gridSize}/>
       </div>
     </div>
     );

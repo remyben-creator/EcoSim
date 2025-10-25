@@ -26,21 +26,41 @@ async function createAnimal(name, species, position) {
 }
 
 // Move animal to a new position
-async function move(animalId, newPosition) {
+async function move(animalId, gridSize = 5) {
     const animal = await Animal.findById(animalId);
     if (!animal) return null;
 
+    // Generate random direction: 0=North, 1=East, 2=South, 3=West
+    const direction = Math.floor(Math.random() * 4);
+    const currentPos = animal.position;
+    let newPosition = { ...currentPos };
+
+    switch (direction) {
+        case 0: // North (up)
+            newPosition.y = Math.max(0, currentPos.y - 1);
+            break;
+        case 1: // East (right)
+            newPosition.x = Math.min(gridSize - 1, currentPos.x + 1);
+            break;
+        case 2: // South (down)
+            newPosition.y = Math.min(gridSize - 1, currentPos.y + 1);
+            break;
+        case 3: // West (left)
+            newPosition.x = Math.max(0, currentPos.x - 1);
+            break;
+    }
+
     animal.position = newPosition;
+    // logActionFrontend(`${animal.species}`, `${animal.name} moved to (${newPosition.x}, ${newPosition.y})`);
     return animal.save();
 }
 
-// Defecation to boost plant growth
-async function defecate(animalId) {
-    const animal = await Animal.findById(animalId);
-    if (!animal) return null;
-
-    // logic TBD
-    return true;
+// wrapper for moving all animals at once
+async function moveAll(gridSize = 5) {
+    const animals = await Animal.find();
+    for (let animal of animals) {
+        await move(animal._id, gridSize);
+    }
 }
 
 // remove function for when eaten or dead
@@ -56,7 +76,7 @@ async function ageOneTick(animalId, energyLoss = 1) {
 
     animal.age += 1;
     animal.energy -= energyLoss;
-    logActionFrontend(`${animal.species}`, `${animal.name} lost ${energyLoss} energy`);
+    // logActionFrontend(`${animal.species}`, `${animal.name} lost ${energyLoss} energy`);
 
     if (animal.energy <= 0) {
         animal.alive = false;
@@ -75,8 +95,17 @@ async function ageOneTickAll(energyLoss = 1) {
 
 module.exports = {
     createAnimal,
-    move,
+    moveAll,
     defecate,
     ageOneTickAll,
     removeAnimal,
 }
+
+// // Defecation to boost plant growth
+// async function defecate(animalId) {
+//     const animal = await Animal.findById(animalId);
+//     if (!animal) return null;
+
+//     // logic TBD
+//     return true;
+// }

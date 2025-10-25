@@ -1,6 +1,6 @@
 // components/GridBox.js
 
-export default function GridBox({ plants, animals, width = 3, height = 3 }) {
+export default function GridBox({ plants, animals, width, height }) {
   // Initialize empty grid with 2x2 mini-cells
   const grid = Array.from({ length: height }, () =>
     Array.from({ length: width }, () => Array(4).fill("⬜"))

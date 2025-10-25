@@ -1,10 +1,13 @@
 // controllers/ecosystemController.js
 const { regrowPlantsAll, createPlant } = require("./plantController");
-const { ageOneTickAll, createAnimal } = require("./animalController");
+const { ageOneTickAll, createAnimal, moveAll } = require("./animalController");
 const { eatPlantAll } = require("./herbivoreController");
 const { huntRabbitAll } = require("./carnivoreController");
 const Plant = require("../models/Plant");
 const Animal = require("../models/Animal");
+
+// global variable to store current gridSize
+let currentGridSize = 5;
 
 // reset DB for fresh run
 async function resetDatabase() {
@@ -15,12 +18,28 @@ async function resetDatabase() {
 }
 
 // create simple ecosystem
-async function initEcosystem() {
-    await createPlant("grass", 5, { x: 0, y: 0 });
-    await createPlant("grass", 5, { x: 1, y: 0 });
-    await createAnimal("1", "rabbit", { x: 0, y: 0 });
-    await createAnimal("2", "rabbit", { x: 0, y: 1 });
-    await createAnimal("1", "fox", { x: 1, y: 0 });
+async function initEcosystem(grassesNum, rabbitsNum, foxesNum, gridSize) {
+    // update global grid size
+    currentGridSize = gridSize;
+
+    while (grassesNum > 0) {
+        randomX = Math.floor(Math.random() * gridSize);
+        randomY = Math.floor(Math.random() * gridSize);
+        await createPlant("grass", 5, { x: randomX, y: randomY });
+        grassesNum -= 1;
+    };
+    while (rabbitsNum > 0) {
+        randomX = Math.floor(Math.random() * gridSize);
+        randomY = Math.floor(Math.random() * gridSize);
+        await createAnimal(rabbitsNum.toString(), "rabbit", { x: randomX, y: randomY });
+        rabbitsNum -= 1;
+    };
+    while (foxesNum > 0) {
+        randomX = Math.floor(Math.random() * gridSize);
+        randomY = Math.floor(Math.random() * gridSize);
+        await createAnimal(foxesNum.toString(), "fox", { x: randomX, y: randomY });
+        foxesNum -= 1;
+    };
 }
 
 // simple logger for each tick
@@ -35,6 +54,8 @@ async function runTick() {
 
         // regrow plants
         await regrowPlantsAll();
+        // move animals
+        await moveAll(currentGridSize);
         logTick("Plants regrown");
         // herbivores eat plants
         await eatPlantAll();

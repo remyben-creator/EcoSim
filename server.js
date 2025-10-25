@@ -29,21 +29,80 @@ const io = new Server(server, {
 setGridSocketIO(io);
 setLoggerSocketIO(io);
 
+// store current grid size globally and simulation state
+let currentGridSize = 5;
+let isSimulationRunning = false;
+let simulationInterval = null;
+
 io.on("connection", (socket) => {
     console.log("Frontend connected for logs");
-})
+
+    // send initial state when frontend connects
+    sendGridUpdate(currentGridSize);
+
+    // Handle ecosystem reset requests
+    socket.on("resetEcosystem", async ({ plantsNum, rabbitsNum, foxesNum, gridSize }) => {
+        try {
+            console.log(`Resetting ecosystem: ${plantsNum} plants, ${rabbitsNum} rabbits, ${foxesNum} foxes, ${gridSize}x${gridSize} grid`);
+            
+            // Stop any running simulation first
+            if (simulationInterval) {
+                clearInterval(simulationInterval);
+                simulationInterval = null;
+                isSimulationRunning = false;
+            }
+
+            // update global grid size
+            currentGridSize = gridSize;
+
+            await resetDatabase();
+            await initEcosystem(plantsNum, rabbitsNum, foxesNum, gridSize);
+            await sendGridUpdate(gridSize);
+            
+            socket.emit("log", "Ecosystem reset successfully!");
+        } catch (error) {
+            console.error("Error resetting ecosystem:", error);
+            socket.emit("log", "Error resetting ecosystem!");
+        }
+    });
+
+        // Handle start simulation requests
+    socket.on("startSimulation", async () => {
+        try {
+            if (isSimulationRunning) {
+                socket.emit("log", "Simulation is already running!");
+                return;
+            }
+
+            // Start the simulation loop
+            isSimulationRunning = true;
+            simulationInterval = setInterval(async () => {
+                await runTick();
+                await sendGridUpdate(currentGridSize);
+            }, 5000);
+            
+            socket.emit("log", "Simulation started!");
+        } catch (error) {
+            console.error("Error starting simulation:", error);
+            socket.emit("log", "Error starting simulation!");
+        }
+    });
+
+    // Handle pause simulation requests
+    socket.on("pauseSimulation", () => {
+        if (simulationInterval && isSimulationRunning) {
+            clearInterval(simulationInterval);
+            simulationInterval = null;
+            isSimulationRunning = false;
+            socket.emit("log", "Simulation paused!");
+        } else {
+            socket.emit("log", "No simulation is currently running!");
+        }
+    });
+});
 
 connectDB().then(async () => {
-    await resetDatabase();
-    await initEcosystem();
-    await runTick();
-    await sendGridUpdate(); // initial state
-
-    // run ticks periodically
-    setInterval(async () => {
-        await runTick();
-        await sendGridUpdate(); // send after each tick
-    }, 5000);
+    console.log("Database connected successfully");
 });
 
 const PORT = process.env.PORT || 5000;

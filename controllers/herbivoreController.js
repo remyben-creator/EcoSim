@@ -18,7 +18,7 @@ async function eatPlant(rabbitId, plantId, amount = 1) {
     else await plant.save();
 
     rabbit.energy += amount;
-    logActionFrontend("Rabbit", `${rabbit.name} gained ${amount} energy`);
+    logActionFrontend("Rabbit", `${rabbit.name} ate grass`);
     return rabbit.save()
 }
 
