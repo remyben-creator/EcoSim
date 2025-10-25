@@ -475,7 +475,7 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$ind
 ;
 var _s = __turbopack_context__.k.signature();
 ;
-function LogBox({ logs, height = "28rem" }) {
+function LogBox({ logs, height = "h-[28rem]" }) {
     _s();
     const endRef = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$index$2e$js__$5b$client$5d$__$28$ecmascript$29$__["useRef"])(null);
     // Scroll to bottom when logs change
@@ -489,30 +489,29 @@ function LogBox({ logs, height = "28rem" }) {
         logs
     ]);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-        className: "p-4 bg-gray-900 text-green-400 font-mono rounded shadow-lg",
-        style: {
-            height,
-            overflowY: "auto",
-            border: "3px solid black",
-            width: "400px",
-            flexShrink: 0
-        },
+        className: `p-4 bg-white text-black rounded shadow-lg ${height} overflow-y-auto border-4 border-black w-full flex-shrink-0`,
         children: [
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                className: "mb-4 text-black font-bold",
+                children: "Logs:"
+            }, void 0, false, {
+                fileName: "[project]/components/LogBox.js",
+                lineNumber: 16,
+                columnNumber: 7
+            }, this),
             logs.map((log, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                    style: {
-                        padding: "0 0.25rem"
-                    },
+                    className: "px-1",
                     children: log
                 }, index, false, {
                     fileName: "[project]/components/LogBox.js",
-                    lineNumber: 24,
+                    lineNumber: 18,
                     columnNumber: 9
                 }, this)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 ref: endRef
             }, void 0, false, {
                 fileName: "[project]/components/LogBox.js",
-                lineNumber: 28,
+                lineNumber: 22,
                 columnNumber: 7
             }, this)
         ]
@@ -588,21 +587,9 @@ function GridBox({ plants, animals, width, height }) {
     // Scale up the font size by 1.75x
     const fontSize = baseFontSize * 1.75;
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+        className: "flex-1 font-mono p-4 text-emerald-600 rounded-lg shadow-md h-[50rem] overflow-y-auto border-4 border-emerald-600 whitespace-pre flex items-center justify-center",
         style: {
-            flex: 1,
-            fontFamily: "monospace",
-            fontSize: `${fontSize}px`,
-            padding: "1rem",
-            color: "#059669",
-            borderRadius: "8px",
-            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-            height: "50rem",
-            overflowY: "auto",
-            border: "1px solid #059669",
-            whiteSpace: "pre",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
+            fontSize: `${fontSize}px`
         },
         children: gridString
     }, void 0, false, {
@@ -621,6 +608,7 @@ if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelper
 "[project]/components/ControlBox.js [client] (ecmascript)", ((__turbopack_context__) => {
 "use strict";
 
+// components/ControlBox.js
 __turbopack_context__.s([
     "default",
     ()=>ControlBox
@@ -657,19 +645,14 @@ function ControlBox({ socket }) {
         }
     };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-        className: "p-4 bg-gray-900 text-white font-mono rounded shadow-lg min-h-52",
-        style: {
-            border: "3px solid black",
-            width: "400px",
-            boxSizing: "border-box"
-        },
+        className: "p-4 bg-white text-white rounded shadow-lg min-h-52 border-4 border-black w-full flex-shrink-0",
         children: [
-            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
-                className: "mb-4 text-green-400",
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                className: "mb-4 text-black font-bold",
                 children: "Controls"
             }, void 0, false, {
                 fileName: "[project]/components/ControlBox.js",
-                lineNumber: 42,
+                lineNumber: 35,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -678,14 +661,14 @@ function ControlBox({ socket }) {
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                className: "text-sm text-green-400",
+                                className: "text-sm text-black",
                                 children: [
                                     "Plants: ",
                                     plantsNum
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/ControlBox.js",
-                                lineNumber: 47,
+                                lineNumber: 40,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -697,26 +680,26 @@ function ControlBox({ socket }) {
                                 className: "w-full"
                             }, void 0, false, {
                                 fileName: "[project]/components/ControlBox.js",
-                                lineNumber: 48,
+                                lineNumber: 41,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/ControlBox.js",
-                        lineNumber: 46,
+                        lineNumber: 39,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                className: "text-sm text-green-400",
+                                className: "text-sm text-black",
                                 children: [
                                     "Rabbits: ",
                                     rabbitsNum
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/ControlBox.js",
-                                lineNumber: 58,
+                                lineNumber: 51,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -728,26 +711,26 @@ function ControlBox({ socket }) {
                                 className: "w-full"
                             }, void 0, false, {
                                 fileName: "[project]/components/ControlBox.js",
-                                lineNumber: 59,
+                                lineNumber: 52,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/ControlBox.js",
-                        lineNumber: 57,
+                        lineNumber: 50,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                className: "text-sm text-green-400",
+                                className: "text-sm text-black",
                                 children: [
                                     "Foxes: ",
                                     foxesNum
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/ControlBox.js",
-                                lineNumber: 69,
+                                lineNumber: 62,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -759,19 +742,19 @@ function ControlBox({ socket }) {
                                 className: "w-full"
                             }, void 0, false, {
                                 fileName: "[project]/components/ControlBox.js",
-                                lineNumber: 70,
+                                lineNumber: 63,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/ControlBox.js",
-                        lineNumber: 68,
+                        lineNumber: 61,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                className: "text-sm text-green-400",
+                                className: "text-sm text-black",
                                 children: [
                                     "Grid Size: ",
                                     gridSize,
@@ -780,7 +763,7 @@ function ControlBox({ socket }) {
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/components/ControlBox.js",
-                                lineNumber: 80,
+                                lineNumber: 73,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -792,19 +775,19 @@ function ControlBox({ socket }) {
                                 className: "w-full"
                             }, void 0, false, {
                                 fileName: "[project]/components/ControlBox.js",
-                                lineNumber: 81,
+                                lineNumber: 74,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/components/ControlBox.js",
-                        lineNumber: 79,
+                        lineNumber: 72,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/ControlBox.js",
-                lineNumber: 45,
+                lineNumber: 38,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -816,37 +799,37 @@ function ControlBox({ socket }) {
                         children: "Reset Ecosystem"
                     }, void 0, false, {
                         fileName: "[project]/components/ControlBox.js",
-                        lineNumber: 94,
+                        lineNumber: 87,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                         onClick: handleStartSimulation,
-                        className: "p-2 bg-gray-700 text-white border border-gray-500 rounded cursor-pointer font-mono hover:bg-gray-600",
+                        className: "p-2 bg-green-700 text-white border border-gray-500 rounded cursor-pointer font-mono hover:bg-gray-600",
                         children: "Start Simulation"
                     }, void 0, false, {
                         fileName: "[project]/components/ControlBox.js",
-                        lineNumber: 100,
+                        lineNumber: 93,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                         onClick: handlePauseSimulation,
-                        className: "p-2 bg-gray-700 text-white border border-gray-500 rounded cursor-pointer font-mono hover:bg-gray-600",
+                        className: "p-2 bg-yellow-700 text-white border border-gray-500 rounded cursor-pointer font-mono hover:bg-gray-600",
                         children: "Pause Simulation"
                     }, void 0, false, {
                         fileName: "[project]/components/ControlBox.js",
-                        lineNumber: 105,
+                        lineNumber: 98,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/components/ControlBox.js",
-                lineNumber: 93,
+                lineNumber: 86,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/components/ControlBox.js",
-        lineNumber: 35,
+        lineNumber: 34,
         columnNumber: 5
     }, this);
 }
@@ -911,54 +894,55 @@ function Home() {
         }
     }["Home.useEffect"], []);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-        className: "p-4 min-h-screen bg-gray-800 flex flex-col items-center",
+        className: "p-4 min-h-screen bg-white flex flex-col",
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
-                className: "text-2xl text-green-400 mb-4",
+                className: "text-2xl text-black mb-2 text-left",
                 children: "Ecosystem Simulation"
             }, void 0, false, {
                 fileName: "[project]/pages/index.js",
                 lineNumber: 31,
-                columnNumber: 7
+                columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                style: {
-                    display: "flex",
-                    flexDirection: "row",
-                    gap: "1rem",
-                    width: "100%",
-                    maxWidth: "1800px",
-                    alignItems: "flex-start"
-                },
+                className: "flex flex-row gap-2 w-full max-w-[1800px] items-start",
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        style: {
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "1rem",
-                            width: "400px",
-                            flexShrink: 0
-                        },
+                        className: "flex flex-col gap-2 w-80 flex-shrink-0",
                         children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$LogBox$2e$js__$5b$client$5d$__$28$ecmascript$29$__["default"], {
-                                logs: logs
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "flex-1",
+                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$LogBox$2e$js__$5b$client$5d$__$28$ecmascript$29$__["default"], {
+                                    logs: logs
+                                }, void 0, false, {
+                                    fileName: "[project]/pages/index.js",
+                                    lineNumber: 35,
+                                    columnNumber: 15
+                                }, this)
                             }, void 0, false, {
                                 fileName: "[project]/pages/index.js",
-                                lineNumber: 47,
-                                columnNumber: 11
+                                lineNumber: 34,
+                                columnNumber: 13
                             }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ControlBox$2e$js__$5b$client$5d$__$28$ecmascript$29$__["default"], {
-                                socket: socket
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "flex-1",
+                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$ControlBox$2e$js__$5b$client$5d$__$28$ecmascript$29$__["default"], {
+                                    socket: socket
+                                }, void 0, false, {
+                                    fileName: "[project]/pages/index.js",
+                                    lineNumber: 38,
+                                    columnNumber: 15
+                                }, this)
                             }, void 0, false, {
                                 fileName: "[project]/pages/index.js",
-                                lineNumber: 48,
-                                columnNumber: 11
+                                lineNumber: 37,
+                                columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/pages/index.js",
-                        lineNumber: 40,
-                        columnNumber: 9
+                        lineNumber: 33,
+                        columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$components$2f$GridBox$2e$js__$5b$client$5d$__$28$ecmascript$29$__["default"], {
                         plants: plants,
@@ -967,20 +951,20 @@ function Home() {
                         height: gridSize
                     }, void 0, false, {
                         fileName: "[project]/pages/index.js",
-                        lineNumber: 50,
-                        columnNumber: 9
+                        lineNumber: 41,
+                        columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/pages/index.js",
                 lineNumber: 32,
-                columnNumber: 7
+                columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/pages/index.js",
         lineNumber: 30,
-        columnNumber: 5
+        columnNumber: 7
     }, this);
 }
 _s(Home, "JQAUDDRx1uLX5jvZH0JwXDP6KiM=");

@@ -1,6 +1,5 @@
-import { useState } from "react";
-
 // components/ControlBox.js
+import { useState } from "react";
 
 export default function ControlBox({ socket }) {
   const [plantsNum, setPlantsNum] = useState(5);
@@ -32,19 +31,13 @@ export default function ControlBox({ socket }) {
   };
 
   return (
-    <div className="p-4 bg-gray-900 text-white font-mono rounded shadow-lg min-h-52"
-      style={{
-        border: "3px solid black",
-        width: "400px",
-        boxSizing: "border-box",
-      }}
-    >
-      <h3 className="mb-4 text-green-400">Controls</h3>
+    <div className="p-4 bg-white text-white rounded shadow-lg min-h-52 border-4 border-black w-full flex-shrink-0">
+      <h2 className="mb-4 text-black font-bold">Controls</h2>
       
       {/* Sliders */}
       <div className="flex flex-col gap-3 mb-4">
         <div>
-          <label className="text-sm text-green-400">Plants: {plantsNum}</label>
+          <label className="text-sm text-black">Plants: {plantsNum}</label>
           <input 
             type="range" 
             min="0" 
@@ -55,7 +48,7 @@ export default function ControlBox({ socket }) {
           />
         </div>
         <div>
-          <label className="text-sm text-green-400">Rabbits: {rabbitsNum}</label>
+          <label className="text-sm text-black">Rabbits: {rabbitsNum}</label>
           <input 
             type="range" 
             min="0" 
@@ -66,7 +59,7 @@ export default function ControlBox({ socket }) {
           />
         </div>
         <div>
-          <label className="text-sm text-green-400">Foxes: {foxesNum}</label>
+          <label className="text-sm text-black">Foxes: {foxesNum}</label>
           <input 
             type="range" 
             min="0" 
@@ -77,7 +70,7 @@ export default function ControlBox({ socket }) {
           />
         </div>
         <div>
-          <label className="text-sm text-green-400">Grid Size: {gridSize}x{gridSize}</label>
+          <label className="text-sm text-black">Grid Size: {gridSize}x{gridSize}</label>
           <input 
             type="range" 
             min="3" 
@@ -99,12 +92,12 @@ export default function ControlBox({ socket }) {
         </button>
         <button 
           onClick={handleStartSimulation}
-          className="p-2 bg-gray-700 text-white border border-gray-500 rounded cursor-pointer font-mono hover:bg-gray-600">
+          className="p-2 bg-green-700 text-white border border-gray-500 rounded cursor-pointer font-mono hover:bg-green-600">
           Start Simulation
         </button>
         <button 
           onClick={handlePauseSimulation}
-          className="p-2 bg-gray-700 text-white border border-gray-500 rounded cursor-pointer font-mono hover:bg-gray-600">
+          className="p-2 bg-yellow-700 text-white border border-gray-500 rounded cursor-pointer font-mono hover:bg-yellow-600">
           Pause Simulation
         </button>
       </div>

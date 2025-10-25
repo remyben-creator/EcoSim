@@ -1,6 +1,5 @@
 // controllers/carnivoreController.js
 const Animal = require("../models/Animal");
-const { createAnimal, move, defecate, ageOneTickAll } = require("./animalController");
 const { removeAnimal } = require("./animalController");
 const { logActionFrontend } = require("../services/loggerService");
 
@@ -38,9 +37,5 @@ async function huntRabbitAll() {
 }
 
 module.exports = { 
-    huntRabbitAll, 
-    createAnimal,
-    move, 
-    defecate, 
-    ageOneTickAll 
+    huntRabbitAll
 };

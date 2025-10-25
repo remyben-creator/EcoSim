@@ -1,6 +1,7 @@
 // controllers/animalController.js
 const Animal = require("../models/Animal");
 const { logActionFrontend } = require("../services/loggerService");
+const Plant = require("../models/Plant");
 
 // create a new animal (of any type)
 async function createAnimal(name, species, position) {
@@ -51,7 +52,133 @@ async function move(animalId, gridSize = 5) {
     }
 
     animal.position = newPosition;
-    // logActionFrontend(`${animal.species}`, `${animal.name} moved to (${newPosition.x}, ${newPosition.y})`);
+    animal.energy -= 1;
+
+    if (animal.energy <= 0) {
+        animal.alive = false;
+        await removeAnimal(animalId);
+    }
+
+    return animal.save();
+}
+
+// logic for food search using BFS
+async function hungryBFS(animal, target, gridSize = 5) {
+    const queue = [{ position: animal.position, distance: 0 }];
+    const visited = new Set();
+    const directions = [
+        { x: 0, y: -1 }, // North
+        { x: 1, y: 0 },  // East
+        { x: 0, y: 1 },  // South
+        { x: -1, y: 0 }  // West
+    ];
+
+    // Get all targets on the grid
+    let targets = [];
+    if (target === "grass") {
+        targets = await Plant.find({ species: "grass" });
+    } else if (target === "rabbit") {
+        targets = await Animal.find({ species: "rabbit" });
+    }
+
+    // Create a set of target positions for quick lookup
+    const targetPositions = new Set(
+        targets.map(t => `${t.position.x},${t.position.y}`)
+    );
+
+    // Check if animal is already on a target - return -1 to indicate no movement needed
+    const animalPosKey = `${animal.position.x},${animal.position.y}`;
+    if (targetPositions.has(animalPosKey)) {
+        return -1; // Special value indicating animal is on target
+    }
+
+    while (queue.length > 0) {
+        const current = queue.shift();
+        const posKey = `${current.position.x},${current.position.y}`;
+
+        if (visited.has(posKey)) continue;
+        visited.add(posKey);
+
+        // Check if we found a target
+        if (targetPositions.has(posKey)) {
+            // Return the direction to move towards this target
+            const dx = current.position.x - animal.position.x;
+            const dy = current.position.y - animal.position.y;
+            
+            // Determine which direction to move first
+            if (Math.abs(dx) > Math.abs(dy)) {
+                return dx > 0 ? 1 : 3; // East or West
+            } else {
+                return dy > 0 ? 2 : 0; // South or North
+            }
+        }
+
+        // Add neighboring positions to queue
+        for (const dir of directions) {
+            const newX = current.position.x + dir.x;
+            const newY = current.position.y + dir.y;
+
+            // Check bounds
+            if (newX >= 0 && newX < gridSize && newY >= 0 && newY < gridSize) {
+                const newPosKey = `${newX},${newY}`;
+                if (!visited.has(newPosKey)) {
+                    queue.push({
+                        position: { x: newX, y: newY },
+                        distance: current.distance + 1
+                    });
+                }
+            }
+        }
+    }
+
+    // No target found, return random direction
+    return Math.floor(Math.random() * 4);
+}
+
+// Move animal to a new position with hungry search logic
+async function moveWithHunger(animalId, gridSize = 5) {
+    const animal = await Animal.findById(animalId);
+    if (!animal) return null;
+
+    let direction;
+    if (animal.species === "rabbit") {
+        direction = hungryBFS(animal, "grass", gridSize);
+    } else if (animal.species === "fox") {
+        direction = hungryBFS(animal, "rabbit", gridSize);
+    } else {
+        direction = Math.floor(Math.random() * 4);
+    }
+
+    // If direction is -1, animal is on target - don't move
+    if (direction === -1) return;
+
+    // Move the animal
+    const currentPos = animal.position;
+    let newPosition = { ...currentPos };
+
+    switch (direction) {
+        case 0: // North (up)
+            newPosition.y = Math.max(0, currentPos.y - 1);
+            break;
+        case 1: // East (right)
+            newPosition.x = Math.min(gridSize - 1, currentPos.x + 1);
+            break;
+        case 2: // South (down)
+            newPosition.y = Math.min(gridSize - 1, currentPos.y + 1);
+            break;
+        case 3: // West (left)
+            newPosition.x = Math.max(0, currentPos.x - 1);
+            break;
+    }
+
+    animal.position = newPosition;
+    animal.energy -= 1;
+
+    if (animal.energy <= 0) {
+        animal.alive = false;
+        await removeAnimal(animalId);
+    }
+
     return animal.save();
 }
 
@@ -59,7 +186,12 @@ async function move(animalId, gridSize = 5) {
 async function moveAll(gridSize = 5) {
     const animals = await Animal.find();
     for (let animal of animals) {
-        await move(animal._id, gridSize);
+        if (animal.energy <= 6) {
+            await moveWithHunger(animal._id, gridSize);
+        }
+        else {
+            await move(animal._id, gridSize);
+        }
     }
 }
 
@@ -74,7 +206,6 @@ async function ageOneTick(animalId, energyLoss = 1) {
     const animal = await Animal.findById(animalId);
     if (!animal) return null;
 
-    animal.age += 1;
     animal.energy -= energyLoss;
     // logActionFrontend(`${animal.species}`, `${animal.name} lost ${energyLoss} energy`);
 
@@ -96,7 +227,6 @@ async function ageOneTickAll(energyLoss = 1) {
 module.exports = {
     createAnimal,
     moveAll,
-    defecate,
     ageOneTickAll,
     removeAnimal,
 }

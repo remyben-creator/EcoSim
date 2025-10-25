@@ -4,6 +4,7 @@ import { io } from "socket.io-client";
 import LogBox from "../components/LogBox";
 import GridBox from "../components/GridBox";
 import ControlBox from "../components/ControlBox";
+import AdderBox from "../components/AdderBox";
 
 export default function Home() {
     const [logs, setLogs] = useState([]);
@@ -27,28 +28,24 @@ export default function Home() {
     }, [])
 
     return (
-    <div className="p-4 min-h-screen bg-gray-800 flex flex-col items-center">
-      <h1 className="text-2xl text-green-400 mb-4">Ecosystem Simulation</h1>
-      <div style={{ 
-        display: "flex", 
-        flexDirection: "row", 
-        gap: "1rem", 
-        width: "100%", 
-        maxWidth: "1800px", // Increased from 1200px
-        alignItems: "flex-start"
-      }}>
-        <div style={{ 
-          display: "flex", 
-          flexDirection: "column", 
-          gap: "1rem",
-          width: "400px",
-          flexShrink: 0
-        }}>
-          <LogBox logs={logs} />
-          <ControlBox socket={socket}/>
+      <div className="p-4 min-h-screen bg-white flex flex-col">
+        <h1 className="text-2xl text-black font-bold mb-2 ml-8">Ecosystem Simulation</h1>
+        <div className="flex flex-row gap-2 w-full max-w-[1800px] items-stretch min-h-[800px]">
+          <div className="flex flex-col gap-2 w-80 flex-shrink-0">
+            <div className="flex-1">
+              <LogBox logs={logs} />
+            </div>
+            <div className="flex-1">
+              <ControlBox socket={socket}/>
+            </div>
+          </div>
+          <div className="flex flex-col gap-2 flex-1">
+            <div className="flex-1">
+              <GridBox plants={plants} animals={animals} width={gridSize} height={gridSize}/>
+            </div>
+            <AdderBox socket={socket}/>
+          </div>
         </div>
-        <GridBox plants={plants} animals={animals} width={gridSize} height={gridSize}/>
       </div>
-    </div>
     );
 }

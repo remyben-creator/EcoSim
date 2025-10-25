@@ -57,22 +57,10 @@ export default function GridBox({ plants, animals, width, height }) {
   const fontSize = baseFontSize * 1.75;
 
   return (
-    <div style={{ 
-      flex: 1, 
-      fontFamily: "monospace", 
-      fontSize: `${fontSize}px`, 
-      padding: "1rem", 
-      color: "#059669", 
-      borderRadius: "8px", 
-      boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", 
-      height: "50rem", 
-      overflowY: "auto", 
-      border: "1px solid #059669",
-      whiteSpace: "pre",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-    }}>
+    <div 
+      className="flex-1 font-mono p-4 text-emerald-600 rounded-lg shadow-md h-[50rem] overflow-y-auto border-4 border-emerald-600 whitespace-pre flex items-center justify-center"
+      style={{ fontSize: `${fontSize}px` }}
+    >
       {gridString}
     </div>
   );

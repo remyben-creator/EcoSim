@@ -1,7 +1,6 @@
 // controllers/herbivoreController.js
 const Animal = require("../models/Animal");
 const Plant = require("../models/Plant");
-const { createAnimal, move, defecate, ageOneTickAll } = require("./animalController");
 const { removePlant } = require("./plantController");
 const { logActionFrontend } = require("../services/loggerService");
 
@@ -38,9 +37,5 @@ async function eatPlantAll() {
 }
 
 module.exports = { 
-    eatPlantAll, 
-    createAnimal, 
-    move, 
-    defecate, 
-    ageOneTickAll 
+    eatPlantAll,
 };

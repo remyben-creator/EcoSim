@@ -1,7 +1,7 @@
 // components/LogBox.js
 import { useEffect, useRef } from "react";
 
-export default function LogBox({ logs, height = "28rem" }) {
+export default function LogBox({ logs, height = "h-[28rem]" }) {
   const endRef = useRef(null);
 
   // Scroll to bottom when logs change
@@ -11,17 +11,11 @@ export default function LogBox({ logs, height = "28rem" }) {
 
   return (
     <div
-      className="p-4 bg-gray-900 text-green-400 font-mono rounded shadow-lg"
-      style={{
-        height,
-        overflowY: "auto",
-        border: "3px solid black",
-        width: "400px", // Fixed width
-        flexShrink: 0, // Don't shrink
-      }}
+      className={`p-4 bg-white text-black rounded shadow-lg ${height} overflow-y-auto border-4 border-black w-full flex-shrink-0`}
     >
+      <h2 className="mb-4 text-black font-bold">Logs:</h2>
       {logs.map((log, index) => (
-        <div key={index} style={{ padding: "0 0.25rem" }}>
+        <div key={index} className="px-1">
           {log}
         </div>
       ))}
