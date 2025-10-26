@@ -38,8 +38,14 @@ async function move(animalId, gridSize = 5) {
     if (!animal) return null;
 
     // Generate random direction: 0=North, 1=East, 2=South, 3=West
-    const direction = Math.floor(Math.random() * 4);
+    const possibleDirections = [];
     const currentPos = animal.position;
+    if (currentPos.y > 0) possibleDirections.push(0); // North
+    if (currentPos.x < gridSize - 1) possibleDirections.push(1); // East
+    if (currentPos.y < gridSize - 1) possibleDirections.push(2); // South
+    if (currentPos.x > 0) possibleDirections.push(3); // West
+
+    const direction = possibleDirections[Math.floor(Math.random() * possibleDirections.length)];
     let newPosition = { ...currentPos };
 
     switch (direction) {
@@ -132,6 +138,12 @@ async function moveAll(gridSize = 5) {
 
 // logic for food search using BFS
 async function hungryBFS(animal, target, gridSize = 5) {
+    // // Only log for rabbit named "1"
+    // const debug = animal.species === "rabbit" && animal.name === "1";
+
+    // if (debug) console.log(`🐇 [hungryBFS] Starting BFS for rabbit '${animal.name}' looking for '${target}'...`);
+    // if (debug) console.log(`Current position: (${animal.position.x}, ${animal.position.y})`);
+
     const queue = [{ position: animal.position, distance: 0 }];
     const visited = new Set();
     const directions = [
@@ -149,15 +161,18 @@ async function hungryBFS(animal, target, gridSize = 5) {
         targets = await Animal.find({ species: "rabbit" });
     }
 
-    // Create a set of target positions for quick lookup
-    const targetPositions = new Set(
-        targets.map(t => `${t.position.x},${t.position.y}`)
-    );
+    const targetPositions = new Set(targets.map(t => `${t.position.x},${t.position.y}`));
 
-    // Check if animal is already on a target - return -1 to indicate no movement needed
+    // if (debug) {
+    //     console.log(`Found ${targets.length} potential targets:`);
+    //     console.log([...targetPositions]);
+    // }
+
+    // Check if animal is already on a target
     const animalPosKey = `${animal.position.x},${animal.position.y}`;
     if (targetPositions.has(animalPosKey)) {
-        return -1; // Special value indicating animal is on target
+        // if (debug) console.log(`🐇 Rabbit '${animal.name}' is already on a target!`);
+        return -1;
     }
 
     while (queue.length > 0) {
@@ -167,26 +182,35 @@ async function hungryBFS(animal, target, gridSize = 5) {
         if (visited.has(posKey)) continue;
         visited.add(posKey);
 
-        // Check if we found a target
+        // if (debug) {
+        //     console.log(`Visiting: (${current.position.x}, ${current.position.y}), distance = ${current.distance}`);
+        // }
+
+        // Found a target
         if (targetPositions.has(posKey)) {
-            // Return the direction to move towards this target
             const dx = current.position.x - animal.position.x;
             const dy = current.position.y - animal.position.y;
-            
-            // Determine which direction to move first
+
+            let direction;
             if (Math.abs(dx) > Math.abs(dy)) {
-                return dx > 0 ? 1 : 3; // East or West
+                direction = dx > 0 ? 1 : 3; // East or West
             } else {
-                return dy > 0 ? 2 : 0; // South or North
+                direction = dy > 0 ? 2 : 0; // South or North
             }
+
+            // if (debug) {
+            //     console.log(`🎯 Target found at (${current.position.x}, ${current.position.y})`);
+            //     console.log(`dx=${dx}, dy=${dy}, chosen direction=${direction === 0 ? "North" : direction === 1 ? "East" : direction === 2 ? "South" : "West"}`);
+            // }
+
+            return direction;
         }
 
-        // Add neighboring positions to queue
+        // Expand neighbors
         for (const dir of directions) {
             const newX = current.position.x + dir.x;
             const newY = current.position.y + dir.y;
 
-            // Check bounds
             if (newX >= 0 && newX < gridSize && newY >= 0 && newY < gridSize) {
                 const newPosKey = `${newX},${newY}`;
                 if (!visited.has(newPosKey)) {
@@ -194,13 +218,20 @@ async function hungryBFS(animal, target, gridSize = 5) {
                         position: { x: newX, y: newY },
                         distance: current.distance + 1
                     });
+                    // if (debug) {
+                    //     console.log(`Queueing new position: (${newX}, ${newY})`);
+                    // }
                 }
-            }
+            } 
+            // else if (debug) {
+            //     console.log(`Skipping out-of-bounds: (${newX}, ${newY})`);
+            // }
         }
     }
 
-    // No target found, return random direction
-    return Math.floor(Math.random() * 4);
+    const randomDir = Math.floor(Math.random() * 4);
+    // if (debug) console.log(`⚠️ No targets found — choosing random direction: ${randomDir}`);
+    return randomDir;
 }
 
 ////////////////////////
