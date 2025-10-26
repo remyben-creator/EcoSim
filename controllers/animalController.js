@@ -3,7 +3,9 @@ const Animal = require("../models/Animal");
 const { logActionFrontend } = require("../services/loggerService");
 const Plant = require("../models/Plant");
 
+/////////////////////////////////////
 // create a new animal (of any type)
+/////////////////////////////////////
 async function createAnimal(name, species, position) {
     if (!["rabbit", "fox"].includes(species)) {
         throw new Error(`Invalid species type: ${species}`);
@@ -25,6 +27,10 @@ async function createAnimal(name, species, position) {
     await animal.save();
     return animal;    
 }
+
+////////////
+// Move
+////////////
 
 // Move animal to a new position
 async function move(animalId, gridSize = 5) {
@@ -57,10 +63,72 @@ async function move(animalId, gridSize = 5) {
     if (animal.energy <= 0) {
         animal.alive = false;
         await removeAnimal(animalId);
+    } else {
+        return animal.save();
+    }
+}
+
+// Move animal to a new position with hungry search logic
+async function moveWithHunger(animalId, gridSize = 5) {
+    const animal = await Animal.findById(animalId);
+    if (!animal) return null;
+
+    let direction;
+    if (animal.species === "rabbit") {
+        direction = hungryBFS(animal, "grass", gridSize);
+    } else if (animal.species === "fox") {
+        direction = hungryBFS(animal, "rabbit", gridSize);
+    } else {
+        direction = Math.floor(Math.random() * 4);
     }
 
-    return animal.save();
+    // If direction is -1, animal is on target - don't move
+    if (direction === -1) return;
+
+    // Move the animal
+    const currentPos = animal.position;
+    let newPosition = { ...currentPos };
+
+    switch (direction) {
+        case 0: // North (up)
+            newPosition.y = Math.max(0, currentPos.y - 1);
+            break;
+        case 1: // East (right)
+            newPosition.x = Math.min(gridSize - 1, currentPos.x + 1);
+            break;
+        case 2: // South (down)
+            newPosition.y = Math.min(gridSize - 1, currentPos.y + 1);
+            break;
+        case 3: // West (left)
+            newPosition.x = Math.max(0, currentPos.x - 1);
+            break;
+    }
+
+    animal.position = newPosition;
+    animal.energy -= 1;
+
+    if (animal.energy <= 0) {
+        animal.alive = false;
+        await removeAnimal(animalId);
+    } else {
+        return animal.save();
+    }
 }
+
+// wrapper for moving all animals at once
+async function moveAll(gridSize = 5) {
+    const animals = await Animal.find();
+    for (let animal of animals) {
+        if (animal.energy <= 6) {
+            await moveWithHunger(animal._id, gridSize);
+        }
+        else {
+            await move(animal._id, gridSize);
+        }
+    }
+}
+
+///////// Move Helper ///////////////////////////
 
 // logic for food search using BFS
 async function hungryBFS(animal, target, gridSize = 5) {
@@ -135,65 +203,9 @@ async function hungryBFS(animal, target, gridSize = 5) {
     return Math.floor(Math.random() * 4);
 }
 
-// Move animal to a new position with hungry search logic
-async function moveWithHunger(animalId, gridSize = 5) {
-    const animal = await Animal.findById(animalId);
-    if (!animal) return null;
-
-    let direction;
-    if (animal.species === "rabbit") {
-        direction = hungryBFS(animal, "grass", gridSize);
-    } else if (animal.species === "fox") {
-        direction = hungryBFS(animal, "rabbit", gridSize);
-    } else {
-        direction = Math.floor(Math.random() * 4);
-    }
-
-    // If direction is -1, animal is on target - don't move
-    if (direction === -1) return;
-
-    // Move the animal
-    const currentPos = animal.position;
-    let newPosition = { ...currentPos };
-
-    switch (direction) {
-        case 0: // North (up)
-            newPosition.y = Math.max(0, currentPos.y - 1);
-            break;
-        case 1: // East (right)
-            newPosition.x = Math.min(gridSize - 1, currentPos.x + 1);
-            break;
-        case 2: // South (down)
-            newPosition.y = Math.min(gridSize - 1, currentPos.y + 1);
-            break;
-        case 3: // West (left)
-            newPosition.x = Math.max(0, currentPos.x - 1);
-            break;
-    }
-
-    animal.position = newPosition;
-    animal.energy -= 1;
-
-    if (animal.energy <= 0) {
-        animal.alive = false;
-        await removeAnimal(animalId);
-    }
-
-    return animal.save();
-}
-
-// wrapper for moving all animals at once
-async function moveAll(gridSize = 5) {
-    const animals = await Animal.find();
-    for (let animal of animals) {
-        if (animal.energy <= 6) {
-            await moveWithHunger(animal._id, gridSize);
-        }
-        else {
-            await move(animal._id, gridSize);
-        }
-    }
-}
+////////////////////////
+// Remove
+////////////////////////
 
 // remove function for when eaten or dead
 async function removeAnimal(animalId) {
@@ -212,9 +224,9 @@ async function ageOneTick(animalId, energyLoss = 1) {
     if (animal.energy <= 0) {
         animal.alive = false;
         await removeAnimal(animalId);
+    } else {
+        return animal.save();
     }
-
-    return animal.save();
 }
 
 async function ageOneTickAll(energyLoss = 1) {

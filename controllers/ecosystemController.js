@@ -65,7 +65,6 @@ async function runTick() {
         logTick("Carnivores have hunted");
         // age all animals / update energy
         await ageOneTickAll();
-        await ageOneTickAll();
         logTick("All animals aged");
 
         logTick("Tick complete");

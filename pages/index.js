@@ -29,7 +29,7 @@ export default function Home() {
 
     return (
       <div className="p-4 min-h-screen bg-white flex flex-col">
-        <h1 className="text-2xl text-black font-bold mb-2 ml-8">Ecosystem Simulation</h1>
+        <h1 className="text-2xl text-black font-bold mb-2 ml-8">Ecosystem Simulator</h1>
         <div className="flex flex-row gap-2 w-full max-w-[1800px] items-stretch min-h-[800px]">
           <div className="flex flex-col gap-2 w-80 flex-shrink-0">
             <div className="flex-1">
