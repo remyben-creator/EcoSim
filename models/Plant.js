@@ -8,10 +8,16 @@ const plantSchema = new mongoose.Schema({
         x: Number,
         y: Number,
     },
+    alive: { type: Boolean, default: true }
 }, { timestamps: true });
 
 plantSchema.methods.regrow = function(amount = 1) {
     this.nutrients += amount;
+    return this.save();
+};
+
+plantSchema.methods.die = function() {
+    this.alive = false;
     return this.save();
 };
 

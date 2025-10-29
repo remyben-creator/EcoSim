@@ -20,7 +20,7 @@ export default function GridBox({ plants, animals, width, height }) {
   // Add plants
   for (const plant of plants) {
     const { x, y } = plant.position;
-    addToCell(x, y, "🌱");
+    if (plant.alive) addToCell(x, y, "🌱");
   }
 
   // Add animals

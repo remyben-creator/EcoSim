@@ -7,10 +7,12 @@ const { logActionFrontend } = require("../sockets/loggerSocket");
 // rabbit eats grass
 async function eatPlant(rabbitId, plantId, amount = 1) {
     const rabbit = await Animal.findById(rabbitId);
-    if (!rabbit || rabbit.species !== "rabbit") return null;
+    if (!rabbit || 
+        rabbit.species !== "rabbit" || 
+        !rabbit.alive) return null;
 
     const plant = await Plant.findById(plantId);
-    if (!plant) return null;
+    if (!plant || !plant.alive) return null;
 
     plant.nutrients -= amount;
     if (plant.nutrients <= 0) await removePlant(plantId);

@@ -4,9 +4,10 @@ const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const http = require("http")
 const { Server } = require("socket.io");
-const { setGridSocketIO, sendGridUpdate } = require("./sockets/gridSocket");
+const { setGridSocketIO } = require("./sockets/gridSocket");
 const { setLoggerSocketIO } = require("./sockets/loggerSocket");
 const environmentRoutes = require("./routes/environmentRoutes");
+const entityRoutes = require("./routes/entityRoutes");
 
 dotenv.config();
 const app = express();
@@ -32,7 +33,7 @@ app.use((req, res, next) => {
 
 // mount API routes
 app.use("/api/environment", environmentRoutes);
-// todo app.use("/api/entities", entityRoutes);
+app.use("/api/entities", entityRoutes);
 
 io.on("connection", (socket) => {
     console.log("Frontend connected");

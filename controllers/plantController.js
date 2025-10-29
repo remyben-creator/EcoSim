@@ -1,9 +1,14 @@
 // controllers/plantController.js
 const Plant = require("../models/Plant");
+const { sendGridUpdate } = require("../sockets/gridSocket");
+const { logActionFrontend } = require("../sockets/loggerSocket");
 
 // create a new plant
-async function createPlant(species, nutrients, position) {
-    const plant = new Plant({ species, nutrients, position });
+async function createPlant(species, nutrients, gridSize) {
+    randomX = Math.floor(Math.random() * gridSize);
+    randomY = Math.floor(Math.random() * gridSize);
+    const plant = new Plant({ species, nutrients, position: { x: randomX, y: randomY }});
+
     return plant.save()
 }
 
@@ -32,7 +37,70 @@ async function regrowPlantsAll(amount = 1) {
 
 // remove function for when eaten or dead
 async function removePlant(plantId) {
-    return await Plant.findByIdAndDelete(plantId);
+    const plant = await Plant.findById(plantId);
+    if (!plant) return null;
+    return plant.die();
+}
+
+//
+// API Route Handlers
+// 
+
+async function addGrass(req,res) {
+   try {
+        const { gridSize } = req.body;
+        await createPlant("grass", 5, gridSize);
+
+        await sendGridUpdate(gridSize);
+
+        res.status(200).json({ message: "Grass added successfully."})
+    } catch (error) {
+        console.error("Error adding grass: ", error);
+        res.status(500).json({ error: "Failed to add grass: " + error.message});
+    }
+}
+
+async function getGrass(req,res) {
+    try {
+        const grass = await Plant.find({ species: "grass" });
+        
+        logActionFrontend(`Got Grass: `, grass.toString());
+
+        res.status(200).json({ message: "Grass retreived successfully."});
+    } catch (error) {
+        console.error("Error retreiving Grass: ", error);
+        res.status(500).json({error: "Failed to retreive Grass: " + error.message });
+    }
+}
+
+async function deleteGrass(req,res) {
+    try {
+        const { gridSize } = req.body;
+        const grass = await Plant.findOne({ species: "grass", alive: true });
+        await removePlant(grass._id);
+
+        await sendGridUpdate(gridSize);
+        
+        res.status(200).json({ message: "Grass deleted successfully."});
+    } catch (error) {
+        console.error("Error deleting grass: ", error);
+        res.status(500).json({ error: "Failed to delete grass: " + error.message });
+    }
+}
+
+async function feedGrass(req,res) {
+    try {
+        const grass = await Plant.findOne({ species: "grass", alive: true });
+        if (!grass) throw new Error("No living grass found.")
+        await regrowPlant(grass._id, 5);
+
+        logActionFrontend("Grass", "grown");
+        
+        res.status(200).json({ message: "Grass fed successfully."});
+    } catch (error) {
+        console.error("Error feeding grass: ", error);
+        res.status(500).json({ error: "Failed to feed grass: " + error.message });
+    }
 }
 
 module.exports = {
@@ -40,4 +108,8 @@ module.exports = {
     findPlantsInArea,
     regrowPlantsAll,
     removePlant,
+    addGrass,
+    getGrass,
+    deleteGrass,
+    feedGrass,
 }

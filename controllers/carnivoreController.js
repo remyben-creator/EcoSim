@@ -7,7 +7,12 @@ const { logActionFrontend } = require("../sockets/loggerSocket");
 async function huntRabbit(foxId, rabbitId, energyGain = 5) {
     const fox = await Animal.findById(foxId);
     const rabbit = await Animal.findById(rabbitId);
-    if (!fox || fox.species !== "fox" || !rabbit || rabbit.species !== "rabbit") return null;
+    if (!fox || 
+        fox.species !== "fox" || 
+        !rabbit || 
+        rabbit.species !== "rabbit" ||
+        !fox.alive ||
+        !rabbit.alive ) return null;
 
     rabbit.alive = false;
     await rabbit.save();

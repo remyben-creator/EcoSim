@@ -12,4 +12,9 @@ const animalSchema = new mongoose.Schema({
     alive: { type: Boolean, default: true },
 });
 
+animalSchema.methods.die = function() {
+    this.alive = false;
+    return this.save();
+};
+
 module.exports = mongoose.model("Animal", animalSchema);

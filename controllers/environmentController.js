@@ -7,6 +7,7 @@ const Plant = require("../models/Plant");
 const Animal = require("../models/Animal");
 const Environment = require("../models/Environment");
 const { sendGridUpdate } = require("../sockets/gridSocket");
+const { logActionFrontend } = require("../sockets/loggerSocket");
 
 //
 // Internal simulation helpers
@@ -35,21 +36,15 @@ async function initEcosystem(grassesNum, rabbitsNum, foxesNum, gridSize) {
     await environment.save();
 
     while (grassesNum > 0) {
-        randomX = Math.floor(Math.random() * gridSize);
-        randomY = Math.floor(Math.random() * gridSize);
-        await createPlant("grass", 5, { x: randomX, y: randomY });
+        await createPlant("grass", 5, gridSize);
         grassesNum -= 1;
     };
     while (rabbitsNum > 0) {
-        randomX = Math.floor(Math.random() * gridSize);
-        randomY = Math.floor(Math.random() * gridSize);
-        await createAnimal(rabbitsNum.toString(), "rabbit", { x: randomX, y: randomY });
+        await createAnimal(rabbitsNum.toString(), "rabbit", gridSize);
         rabbitsNum -= 1;
     };
     while (foxesNum > 0) {
-        randomX = Math.floor(Math.random() * gridSize);
-        randomY = Math.floor(Math.random() * gridSize);
-        await createAnimal(foxesNum.toString(), "fox", { x: randomX, y: randomY });
+        await createAnimal(foxesNum.toString(), "fox", gridSize);
         foxesNum -= 1;
     };
 }
@@ -178,6 +173,19 @@ async function pauseSimulation(req, res) {
     }
 }
 
+async function getEnvironment(req,res) {
+    try {
+        const environment = await Environment.findOne();
+        
+        logActionFrontend(`Got Environment: `, environment.toString());
+
+        res.status(200).json({ message: "Environment retreived successfully."});
+    } catch (error) {
+        console.error("Error retreiving environment: ", error);
+        res.status(500).json({ error: "Failed to retrieve environment: " + error.message });
+    }
+}
+
 module.exports = {
     resetDatabase,
     initEcosystem,
@@ -185,4 +193,5 @@ module.exports = {
     resetEcosystem,
     startSimulation,
     pauseSimulation,
+    getEnvironment,
 }

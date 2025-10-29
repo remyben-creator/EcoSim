@@ -43,7 +43,7 @@ export default function Home() {
             <div className="flex-1">
               <GridBox plants={plants} animals={animals} width={gridSize} height={gridSize}/>
             </div>
-            <AdderBox socket={socket}/>
+            <AdderBox socket={socket} gridSize={gridSize}/>
           </div>
         </div>
       </div>

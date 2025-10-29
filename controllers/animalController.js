@@ -2,11 +2,12 @@
 const Animal = require("../models/Animal");
 const { logActionFrontend } = require("../sockets/loggerSocket");
 const Plant = require("../models/Plant");
+const { sendGridUpdate } = require("../sockets/gridSocket");
 
 //
 // create a new animal (of any type)
 //
-async function createAnimal(name, species, position) {
+async function createAnimal(name, species, gridSize) {
     if (!["rabbit", "fox"].includes(species)) {
         throw new Error(`Invalid species type: ${species}`);
     }
@@ -17,10 +18,14 @@ async function createAnimal(name, species, position) {
         alive: true,
     }
 
+    // for position
+    randomX = Math.floor(Math.random() * gridSize);
+    randomY = Math.floor(Math.random() * gridSize);
+
     const animal = new Animal({
         name,
         species,
-        position,
+        position: { x: randomX, y: randomY },
         ...defaults,
     });
 
@@ -125,16 +130,18 @@ async function moveWithHunger(animalId, gridSize = 5) {
 async function moveAll(gridSize = 5) {
     const animals = await Animal.find();
     for (let animal of animals) {
-        if (animal.energy <= 6) {
-            await moveWithHunger(animal._id, gridSize);
-        }
-        else {
-            await move(animal._id, gridSize);
+        if (animal.alive) {
+            if (animal.energy <= 6) {
+                await moveWithHunger(animal._id, gridSize);
+            }
+            else {
+                await move(animal._id, gridSize);
+            }
         }
     }
 }
 
-///////// Move Helper ///////////////////////////
+// Move Helper //
 
 // logic for food search using BFS
 async function hungryBFS(animal, target, gridSize = 5) {
@@ -241,8 +248,9 @@ async function hungryBFS(animal, target, gridSize = 5) {
 // remove function for when eaten or dead
 async function removeAnimal(animalId) {
     const animal = await Animal.findById(animalId);
+    if (!animal) return null;
     logActionFrontend(`${animal.species}`, `${animal.name} died`)
-    return await Animal.findByIdAndDelete(animalId);
+    return await animal.die();
 }
 
 async function ageOneTick(animalId, energyLoss = 1) {
@@ -267,18 +275,148 @@ async function ageOneTickAll(energyLoss = 1) {
     }
 }
 
+//
+// Feed
+//
+
+// feeding function
+async function feedAnimal(animalId) {
+    const animal = await Animal.findById(animalId);
+    animal.energy += 5;
+    return animal.save();
+}
+
+//
+// API Route Handlers
+// 
+
+async function addRabbit(req,res) {
+    try {
+        const { gridSize } = req.body;
+        await createAnimal("Added", "rabbit", gridSize);
+
+        await sendGridUpdate(gridSize);
+
+        res.status(200).json({ message: "Rabbit added successfully."})
+    } catch (error) {
+        console.error("Error adding rabbit: ", error);
+        res.status(500).json({ error: "Failed to add rabbit: " + error.message});
+    }
+}
+
+async function getRabbit(req,res) {
+    try {
+        const rabbits = await Animal.find({ species: "rabbit" });
+        
+        logActionFrontend(`Got Rabbits: `, rabbits.toString());
+
+        res.status(200).json({ message: "Rabbits retreived successfully."});
+    } catch (error) {
+        console.error("Error retreiving rabbits: ", error);
+        res.status(500).json({error: "Failed to retreive rabbits: " + error.message });
+    }
+}
+
+async function deleteRabbit(req,res) {
+    try {
+        const { gridSize } = req.body;
+        const rabbit = await Animal.findOne({ species: "rabbit", alive: true });
+        await removeAnimal(rabbit._id);
+
+        await sendGridUpdate(gridSize);
+        
+        res.status(200).json({ message: "Rabbit deleted successfully."});
+    } catch (error) {
+        console.error("Error deleting rabbit: ", error);
+        res.status(500).json({ error: "Failed to delete rabbit: " + error.message });
+    }
+}
+
+async function feedRabbit(req,res) {
+    try {
+        const rabbit = await Animal.findOne({ species: "rabbit", alive: true });
+        if (!rabbit) throw new Error("No living rabbits found.")
+        await feedAnimal(rabbit._id);
+
+        logActionFrontend("Rabbit", "Fed");
+        
+        res.status(200).json({ message: "Rabbit fed successfully."});
+    } catch (error) {
+        console.error("Error feeding rabbit: ", error);
+        res.status(500).json({ error: "Failed to feed rabbit: " + error.message });
+    }
+}
+
+
+async function addFox(req,res) {
+    try {
+        const { gridSize } = req.body;
+        console.log(gridSize)
+        await createAnimal("Added", "fox", gridSize);
+
+        await sendGridUpdate(gridSize);
+
+        res.status(200).json({ message: "Fox added successfully."})
+    } catch (error) {
+        console.error("Error adding fox: ", error);
+        res.status(500).json({ error: "Failed to add fox: " + error.message});
+    }
+}
+
+async function getFox(req,res) {
+    try {
+        const foxes = await Animal.find({ species: "fox" });
+        
+        logActionFrontend(`Got Foxes: `, foxes.toString());
+
+        res.status(200).json({ message: "Foxes retreived successfully."});
+    } catch (error) {
+        console.error("Error retreiving foxes: ", error);
+        res.status(500).json({error: "Failed to retreive foxes: " + error.message });
+    }
+}
+
+async function deleteFox(req,res) {
+    try {
+        const { gridSize } = req.body;
+        const fox = await Animal.findOne({ species: "fox", alive: true });
+        await removeAnimal(fox._id);
+        
+        await sendGridUpdate(gridSize);
+
+        res.status(200).json({ message: "Fox deleted successfully."});
+    } catch (error) {
+        console.error("Error deleting fox: ", error);
+        res.status(500).json({ error: "Failed to delete fox: " + error.message });
+    }
+}
+
+async function feedFox(req,res) {
+    try {
+        const fox = await Animal.findOne({ species: "fox", alive: true});
+        if (!fox) throw new Error("No living foxes found.")
+        await feedAnimal(fox._id);
+
+        logActionFrontend("Fox", "Fed");
+        
+        res.status(200).json({ message: "Fox fed successfully."});
+    } catch (error) {
+        console.error("Error feeding fox: ", error);
+        res.status(500).json({ error: "Failed to feed fox: " + error.message });
+    }
+}
+
 module.exports = {
     createAnimal,
     moveAll,
     ageOneTickAll,
     removeAnimal,
+    addRabbit,
+    addFox,
+    getRabbit,
+    getFox,
+    deleteRabbit,
+    deleteFox,
+    feedRabbit,
+    feedFox,
 }
-
-// // Defecation to boost plant growth
-// async function defecate(animalId) {
-//     const animal = await Animal.findById(animalId);
-//     if (!animal) return null;
-
-//     // logic TBD
-//     return true;
-// }
