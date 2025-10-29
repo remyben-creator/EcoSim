@@ -1,7 +1,7 @@
 // controllers/carnivoreController.js
 const Animal = require("../models/Animal");
 const { removeAnimal } = require("./animalController");
-const { logActionFrontend } = require("../services/loggerService");
+const { logActionFrontend } = require("../sockets/loggerSocket");
 
 // fox hunts rabbits
 async function huntRabbit(foxId, rabbitId, energyGain = 5) {

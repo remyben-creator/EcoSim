@@ -1,11 +1,11 @@
 // controllers/animalController.js
 const Animal = require("../models/Animal");
-const { logActionFrontend } = require("../services/loggerService");
+const { logActionFrontend } = require("../sockets/loggerSocket");
 const Plant = require("../models/Plant");
 
-/////////////////////////////////////
+//
 // create a new animal (of any type)
-/////////////////////////////////////
+//
 async function createAnimal(name, species, position) {
     if (!["rabbit", "fox"].includes(species)) {
         throw new Error(`Invalid species type: ${species}`);
@@ -28,9 +28,9 @@ async function createAnimal(name, species, position) {
     return animal;    
 }
 
-////////////
+//
 // Move
-////////////
+//
 
 // Move animal to a new position
 async function move(animalId, gridSize = 5) {
@@ -234,9 +234,9 @@ async function hungryBFS(animal, target, gridSize = 5) {
     return randomDir;
 }
 
-////////////////////////
+//
 // Remove
-////////////////////////
+//
 
 // remove function for when eaten or dead
 async function removeAnimal(animalId) {

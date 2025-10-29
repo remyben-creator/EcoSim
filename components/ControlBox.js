@@ -7,27 +7,20 @@ export default function ControlBox({ socket }) {
   const [foxesNum, setFoxesNum] = useState(2);
   const [gridSize, setGridSize] = useState(5);
 
-  const handleResetEcosystem = () => {
-    if (socket) {
-      socket.emit("resetEcosystem", {
-        plantsNum,
-        rabbitsNum,
-        foxesNum,
-        gridSize
-      });
-    }
+  const handleResetEcosystem = async() => {
+    await fetch(`/api/environment/reset`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ plantsNum, rabbitsNum, foxesNum, gridSize }),
+    });
   };
 
-  const handleStartSimulation = () => {
-    if (socket) {
-      socket.emit("startSimulation");
-    }
+  const handleStartSimulation = async() => {
+    await fetch(`/api/environment/start`, { method: "POST" });
   };
 
-  const handlePauseSimulation = () => {
-    if (socket) {
-      socket.emit("pauseSimulation");
-    }
+  const handlePauseSimulation = async() => {
+    await fetch(`/api/environment/pause`, { method: "POST" });
   };
 
   return (

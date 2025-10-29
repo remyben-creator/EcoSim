@@ -2,7 +2,7 @@
 const Animal = require("../models/Animal");
 const Plant = require("../models/Plant");
 const { removePlant } = require("./plantController");
-const { logActionFrontend } = require("../services/loggerService");
+const { logActionFrontend } = require("../sockets/loggerSocket");
 
 // rabbit eats grass
 async function eatPlant(rabbitId, plantId, amount = 1) {
