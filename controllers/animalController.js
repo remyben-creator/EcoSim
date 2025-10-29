@@ -7,7 +7,7 @@ const { sendGridUpdate } = require("../sockets/gridSocket");
 //
 // create a new animal (of any type)
 //
-async function createAnimal(name, species, gridSize) {
+async function createAnimal(name, species, gridSize, api = false) {
     if (!["rabbit", "fox"].includes(species)) {
         throw new Error(`Invalid species type: ${species}`);
     }
@@ -28,6 +28,8 @@ async function createAnimal(name, species, gridSize) {
         position: { x: randomX, y: randomY },
         ...defaults,
     });
+
+    if (api) logActionFrontend(animal.species + animal.name, " added");
 
     await animal.save();
     return animal;    
@@ -133,6 +135,7 @@ async function moveAll(gridSize = 5) {
         if (animal.alive) {
             if (animal.energy <= 6) {
                 await moveWithHunger(animal._id, gridSize);
+                logActionFrontend(animal.species + animal.name, " is hungry!")
             }
             else {
                 await move(animal._id, gridSize);
@@ -246,10 +249,14 @@ async function hungryBFS(animal, target, gridSize = 5) {
 //
 
 // remove function for when eaten or dead
-async function removeAnimal(animalId) {
+async function removeAnimal(animalId, api = false) {
     const animal = await Animal.findById(animalId);
     if (!animal) return null;
-    logActionFrontend(`${animal.species}`, `${animal.name} died`)
+    if (api) {
+        logActionFrontend(animal.species + animal.name, "killed by YOU.");
+    } else {
+        logActionFrontend(animal.species + animal.name, `died`)
+    }
     return await animal.die();
 }
 
@@ -258,7 +265,6 @@ async function ageOneTick(animalId, energyLoss = 1) {
     if (!animal) return null;
 
     animal.energy -= energyLoss;
-    // logActionFrontend(`${animal.species}`, `${animal.name} lost ${energyLoss} energy`);
 
     if (animal.energy <= 0) {
         animal.alive = false;
@@ -283,6 +289,7 @@ async function ageOneTickAll(energyLoss = 1) {
 async function feedAnimal(animalId) {
     const animal = await Animal.findById(animalId);
     animal.energy += 5;
+    logActionFrontend(animal.species + animal.name, "fed");
     return animal.save();
 }
 
@@ -293,7 +300,7 @@ async function feedAnimal(animalId) {
 async function addRabbit(req,res) {
     try {
         const { gridSize } = req.body;
-        await createAnimal("Added", "rabbit", gridSize);
+        await createAnimal("Added", "rabbit", gridSize, true);
 
         await sendGridUpdate(gridSize);
 
@@ -308,7 +315,7 @@ async function getRabbit(req,res) {
     try {
         const rabbits = await Animal.find({ species: "rabbit" });
         
-        logActionFrontend(`Got Rabbits: `, rabbits.toString());
+        logActionFrontend(`Rabbits: `, rabbits.toString());
 
         res.status(200).json({ message: "Rabbits retreived successfully."});
     } catch (error) {
@@ -321,10 +328,10 @@ async function deleteRabbit(req,res) {
     try {
         const { gridSize } = req.body;
         const rabbit = await Animal.findOne({ species: "rabbit", alive: true });
-        await removeAnimal(rabbit._id);
+        await removeAnimal(rabbit._id, true);
 
         await sendGridUpdate(gridSize);
-        
+
         res.status(200).json({ message: "Rabbit deleted successfully."});
     } catch (error) {
         console.error("Error deleting rabbit: ", error);
@@ -337,8 +344,6 @@ async function feedRabbit(req,res) {
         const rabbit = await Animal.findOne({ species: "rabbit", alive: true });
         if (!rabbit) throw new Error("No living rabbits found.")
         await feedAnimal(rabbit._id);
-
-        logActionFrontend("Rabbit", "Fed");
         
         res.status(200).json({ message: "Rabbit fed successfully."});
     } catch (error) {
@@ -352,7 +357,7 @@ async function addFox(req,res) {
     try {
         const { gridSize } = req.body;
         console.log(gridSize)
-        await createAnimal("Added", "fox", gridSize);
+        await createAnimal("Added", "fox", gridSize, true);
 
         await sendGridUpdate(gridSize);
 
@@ -367,7 +372,7 @@ async function getFox(req,res) {
     try {
         const foxes = await Animal.find({ species: "fox" });
         
-        logActionFrontend(`Got Foxes: `, foxes.toString());
+        logActionFrontend(`Foxes: `, foxes.toString());
 
         res.status(200).json({ message: "Foxes retreived successfully."});
     } catch (error) {
@@ -380,7 +385,7 @@ async function deleteFox(req,res) {
     try {
         const { gridSize } = req.body;
         const fox = await Animal.findOne({ species: "fox", alive: true });
-        await removeAnimal(fox._id);
+        await removeAnimal(fox._id, true);
         
         await sendGridUpdate(gridSize);
 
@@ -396,8 +401,6 @@ async function feedFox(req,res) {
         const fox = await Animal.findOne({ species: "fox", alive: true});
         if (!fox) throw new Error("No living foxes found.")
         await feedAnimal(fox._id);
-
-        logActionFrontend("Fox", "Fed");
         
         res.status(200).json({ message: "Fox fed successfully."});
     } catch (error) {

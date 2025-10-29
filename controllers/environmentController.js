@@ -24,6 +24,7 @@ async function resetDatabase(gridSize) {
         Animal.deleteMany({}),
         Environment.deleteMany({})
     ]);
+    logActionFrontend("Database ", "reset");
 }
 
 // create simple ecosystem
@@ -47,6 +48,7 @@ async function initEcosystem(grassesNum, rabbitsNum, foxesNum, gridSize) {
         await createAnimal(foxesNum.toString(), "fox", gridSize);
         foxesNum -= 1;
     };
+    logActionFrontend("Ecosystem ", "initialized");
 }
 
 // run one simulation tick
@@ -62,6 +64,8 @@ async function runTick(gridSize) {
         await huntRabbitAll();
         // age all animals / update energy
         await ageOneTickAll();
+
+        logActionFrontend("Simulation tick ", "executed");
         
     } catch (error) {
         console.error("Error during ecosystem tick:", error);
@@ -90,6 +94,7 @@ async function runSimulationTick(io) {
 
 function startSimulationLoop(io) {
     if (intervalId) return console.log("Simulation is already running.");
+    logActionFrontend("Simulation", "started");
     console.log("Starting simulation loop...");
     intervalId = setInterval(() => runSimulationTick(io), 1000); // 1 second per tick
 }
@@ -98,6 +103,7 @@ function stopSimulationLoop(io) {
     if (intervalId) {
         clearInterval(intervalId);
         intervalId = null;
+        logActionFrontend("Simulation", "paused");
         console.log("Simulation loop stopped.");
     }
 }
@@ -177,7 +183,7 @@ async function getEnvironment(req,res) {
     try {
         const environment = await Environment.findOne();
         
-        logActionFrontend(`Got Environment: `, environment.toString());
+        logActionFrontend(`Environment: `, environment.toString());
 
         res.status(200).json({ message: "Environment retreived successfully."});
     } catch (error) {

@@ -4,11 +4,12 @@ const { sendGridUpdate } = require("../sockets/gridSocket");
 const { logActionFrontend } = require("../sockets/loggerSocket");
 
 // create a new plant
-async function createPlant(species, nutrients, gridSize) {
+async function createPlant(species, nutrients, gridSize, api = false) {
     randomX = Math.floor(Math.random() * gridSize);
     randomY = Math.floor(Math.random() * gridSize);
     const plant = new Plant({ species, nutrients, position: { x: randomX, y: randomY }});
 
+    if (api) logActionFrontend("Grass ", "added");
     return plant.save()
 }
 
@@ -21,9 +22,10 @@ async function findPlantsInArea(xMin, xMax, yMin, yMax) {
 }
 
 // regrow plant
-async function regrowPlant(plantId, amount = 1) {
+async function regrowPlant(plantId, amount = 1, api = false) {
     const plant = await Plant.findById(plantId);
     if (!plant) return null;
+    if (api) logActionFrontend("Single grass ", "regrown");
     return plant.regrow(amount);
 }
 
@@ -36,9 +38,10 @@ async function regrowPlantsAll(amount = 1) {
 }
 
 // remove function for when eaten or dead
-async function removePlant(plantId) {
+async function removePlant(plantId, api) {
     const plant = await Plant.findById(plantId);
     if (!plant) return null;
+    if (api) logActionFrontend("Grass ", "killed by YOU.");
     return plant.die();
 }
 
@@ -49,7 +52,7 @@ async function removePlant(plantId) {
 async function addGrass(req,res) {
    try {
         const { gridSize } = req.body;
-        await createPlant("grass", 5, gridSize);
+        await createPlant("grass", 5, gridSize, true);
 
         await sendGridUpdate(gridSize);
 
@@ -64,7 +67,7 @@ async function getGrass(req,res) {
     try {
         const grass = await Plant.find({ species: "grass" });
         
-        logActionFrontend(`Got Grass: `, grass.toString());
+        logActionFrontend(`Grass: `, grass.toString());
 
         res.status(200).json({ message: "Grass retreived successfully."});
     } catch (error) {
@@ -77,7 +80,7 @@ async function deleteGrass(req,res) {
     try {
         const { gridSize } = req.body;
         const grass = await Plant.findOne({ species: "grass", alive: true });
-        await removePlant(grass._id);
+        await removePlant(grass._id, true);
 
         await sendGridUpdate(gridSize);
         
@@ -92,9 +95,7 @@ async function feedGrass(req,res) {
     try {
         const grass = await Plant.findOne({ species: "grass", alive: true });
         if (!grass) throw new Error("No living grass found.")
-        await regrowPlant(grass._id, 5);
-
-        logActionFrontend("Grass", "grown");
+        await regrowPlant(grass._id, 5, true);
         
         res.status(200).json({ message: "Grass fed successfully."});
     } catch (error) {

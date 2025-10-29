@@ -16,7 +16,7 @@ function logActionFrontend(entity, message) {
         console.warn("Socket.IO not initialized yet!");
         return;
     }
-    fullMessage = `[${getTimeStamp()}] (${entity}) ${message}`;
+    fullMessage = `[${getTimeStamp()}] ${entity} ${message}`;
     io.emit("log", fullMessage);
 }
 
