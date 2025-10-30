@@ -1,11 +1,12 @@
+// routes/api/entityRoutes.js
 const express = require("express");
-const { getEnvironment } = require("../controllers/environmentController");
+const { getEnvironment } = require("../../controllers/environmentController");
 const {
     addGrass,
     getGrass,
     deleteGrass,
     feedGrass,
-} = require("../controllers/plantController");
+} = require("../../controllers/plantController");
 const {
     addRabbit,
     getRabbit,
@@ -15,7 +16,7 @@ const {
     getFox,
     deleteFox,
     feedFox,
-} = require("../controllers/animalController");
+} = require("../../controllers/animalController");
 const router = express.Router();
 
 // add

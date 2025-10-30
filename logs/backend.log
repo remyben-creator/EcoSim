@@ -1,0 +1,20 @@
+[10:46:31] Received MinIO event:
+[10:46:31] Bucket: ecosim-runs | Object: runs%2Frun_2025-10-30T14-46-31-377Z%2Fbackend.log
+[10:46:31] Upload count: 2/50
+[10:46:31] Uploaded frontend.log for run run_2025-10-30T14-46-31-377Z
+[10:46:31] Received MinIO event:
+[10:46:31] Bucket: ecosim-runs | Object: runs%2Frun_2025-10-30T14-46-31-377Z%2Ffrontend.log
+[10:46:31] Upload count: 3/50
+[10:46:31] Uploaded plants.json for run run_2025-10-30T14-46-31-377Z
+[10:46:31] Received MinIO event:
+[10:46:31] Bucket: ecosim-runs | Object: runs%2Frun_2025-10-30T14-46-31-377Z%2Fplants.json
+[10:46:31] Upload count: 4/50
+[10:46:31] Uploaded animals.json for run run_2025-10-30T14-46-31-377Z
+[10:46:31] Received MinIO event:
+[10:46:31] Bucket: ecosim-runs | Object: runs%2Frun_2025-10-30T14-46-31-377Z%2Fanimals.json
+[10:46:31] Upload count: 5/50
+[10:46:31] Uploaded environment.json for run run_2025-10-30T14-46-31-377Z
+[10:46:31] Received MinIO event:
+[10:46:31] Bucket: ecosim-runs | Object: runs%2Frun_2025-10-30T14-46-31-377Z%2Fenvironment.json
+[10:46:31] Upload count: 6/50
+[10:46:31] Grid update sent to frontend

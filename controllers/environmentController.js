@@ -7,7 +7,9 @@ const Plant = require("../models/Plant");
 const Animal = require("../models/Animal");
 const Environment = require("../models/Environment");
 const { sendGridUpdate } = require("../sockets/gridSocket");
-const { logActionFrontend } = require("../sockets/loggerSocket");
+const { logActionFrontend, frontendLogPath } = require("../sockets/loggerSocket");
+const { logBackend, logBackendError, backendLogPath } = require("../utils/logger");
+const { archiveRunData } = require("../services/s3StorageService");
 
 //
 // Internal simulation helpers
@@ -16,14 +18,23 @@ const { logActionFrontend } = require("../sockets/loggerSocket");
 let intervalId = null;
 
 // reset DB for fresh run
-async function resetDatabase(gridSize) {
-    // ! -- works based on no saving
-    // todo -- create saving into S3 when time comes
+async function resetDatabase() {
+    const plants = await Plant.find().lean();
+    const animals = await Animal.find().lean();
+    const environment = await Environment.findOne().lean();
+
+    // generate unique runId based on timestamp
+    const runId = `run_${new Date().toISOString().replace(/[:.]/g, "-")}`;
+    // archive everything relating to run
+    await archiveRunData(runId, { backendLogPath, frontendLogPath, plants, animals, environment });
+
+    // clear DB
     await Promise.all([
         Plant.deleteMany({}),
         Animal.deleteMany({}),
         Environment.deleteMany({})
     ]);
+
     logActionFrontend("Database ", "reset");
 }
 
@@ -68,7 +79,7 @@ async function runTick(gridSize) {
         logActionFrontend("Simulation tick ", "executed");
         
     } catch (error) {
-        console.error("Error during ecosystem tick:", error);
+        logBackendError("Error during ecosystem tick:", error);
     }
 }
 
@@ -78,7 +89,7 @@ async function runSimulationTick(io) {
         if (!environment || !environment.isSimulationRunning) {
             clearInterval(intervalId);
             intervalId = null;
-            console.log("Simulation stopped or environment not found.");
+            logBackend("Simulation stopped or environment not found.");
             return;
         }
 
@@ -86,16 +97,16 @@ async function runSimulationTick(io) {
         await runTick(gridSize);
         await sendGridUpdate(gridSize);
         
-        console.log("Simulation tick executed.");
+        logBackend("Simulation tick executed.");
     } catch (error) {
-        console.error("Error running simulation tick: ", error);
+        logBackendError("Error running simulation tick: ", error);
     }
 }
 
 function startSimulationLoop(io) {
-    if (intervalId) return console.log("Simulation is already running.");
+    if (intervalId) return logBackend("Simulation is already running.");
     logActionFrontend("Simulation", "started");
-    console.log("Starting simulation loop...");
+    logBackend("Starting simulation loop...");
     intervalId = setInterval(() => runSimulationTick(io), 1000); // 1 second per tick
 }
 
@@ -104,7 +115,7 @@ function stopSimulationLoop(io) {
         clearInterval(intervalId);
         intervalId = null;
         logActionFrontend("Simulation", "paused");
-        console.log("Simulation loop stopped.");
+        logBackend("Simulation loop stopped.");
     }
 }
 //
@@ -113,12 +124,10 @@ function stopSimulationLoop(io) {
 
 async function resetEcosystem(req, res) {
     try {
-        // ! -- no frontend logging
-        // todo -- reset database
         // access the body fields
         const { plantsNum, rabbitsNum, foxesNum, gridSize } = req.body;
 
-        console.log("Resetting with: ", { plantsNum, rabbitsNum, foxesNum, gridSize });
+        logBackend("Resetting with: ", { plantsNum, rabbitsNum, foxesNum, gridSize });
 
         await resetDatabase();
         await initEcosystem(plantsNum, rabbitsNum, foxesNum, gridSize);
@@ -126,7 +135,7 @@ async function resetEcosystem(req, res) {
         
         res.status(200).json({ message: "Simulation reset successfully."});
     } catch(error) {
-        console.error("Error resetting simulation: ", error);
+        logBackendError("Error resetting simulation: ", error);
         res.status(500).json({ error: "Failed to reset simulation."});
     }
 }
@@ -150,7 +159,7 @@ async function startSimulation(req, res) {
 
         res.status(200).json({ message: "Simulation started successfully."});
     } catch(error) {
-        console.error("Error starting simulation: ", error);
+        logBackendError("Error starting simulation: ", error);
         res.status(500).json({ error: "Failed to start simulation: " + error.message});
     }
 }
@@ -174,7 +183,7 @@ async function pauseSimulation(req, res) {
 
         res.status(200).json({ message: "Simulation paused successfully."});
     } catch(error) {
-        console.error("Error pausing simulation: ", error);
+        logBackendError("Error pausing simulation: ", error);
         res.status(500).json({ error: "Failed to pause simulation.: " + error.message});
     }
 }
@@ -187,7 +196,7 @@ async function getEnvironment(req,res) {
 
         res.status(200).json({ message: "Environment retreived successfully."});
     } catch (error) {
-        console.error("Error retreiving environment: ", error);
+        logBackendError("Error retreiving environment: ", error);
         res.status(500).json({ error: "Failed to retrieve environment: " + error.message });
     }
 }

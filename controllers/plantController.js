@@ -2,6 +2,7 @@
 const Plant = require("../models/Plant");
 const { sendGridUpdate } = require("../sockets/gridSocket");
 const { logActionFrontend } = require("../sockets/loggerSocket");
+const { logBackendError } = require("../utils/logger");
 
 // create a new plant
 async function createPlant(species, nutrients, gridSize, api = false) {
@@ -58,7 +59,7 @@ async function addGrass(req,res) {
 
         res.status(200).json({ message: "Grass added successfully."})
     } catch (error) {
-        console.error("Error adding grass: ", error);
+        logBackendError("Error adding grass: ", error);
         res.status(500).json({ error: "Failed to add grass: " + error.message});
     }
 }
@@ -71,7 +72,7 @@ async function getGrass(req,res) {
 
         res.status(200).json({ message: "Grass retreived successfully."});
     } catch (error) {
-        console.error("Error retreiving Grass: ", error);
+        logBackendError("Error retreiving Grass: ", error);
         res.status(500).json({error: "Failed to retreive Grass: " + error.message });
     }
 }
@@ -86,7 +87,7 @@ async function deleteGrass(req,res) {
         
         res.status(200).json({ message: "Grass deleted successfully."});
     } catch (error) {
-        console.error("Error deleting grass: ", error);
+        logBackendError("Error deleting grass: ", error);
         res.status(500).json({ error: "Failed to delete grass: " + error.message });
     }
 }
@@ -99,7 +100,7 @@ async function feedGrass(req,res) {
         
         res.status(200).json({ message: "Grass fed successfully."});
     } catch (error) {
-        console.error("Error feeding grass: ", error);
+        logBackendError("Error feeding grass: ", error);
         res.status(500).json({ error: "Failed to feed grass: " + error.message });
     }
 }

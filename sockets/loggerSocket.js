@@ -1,7 +1,14 @@
 // services/loggerServices.js
+const fs = require("fs");
+const path = require("path");
 
 // socket setup
 let io;
+
+// txt file setup
+const logsDir = path.join(__dirname, "../logs");
+fs.mkdirSync(logsDir, { recursive: true });
+const frontendLogPath = path.join(logsDir, "frontend.log");
 
 function setLoggerSocketIO(socketInstance) {
     io = socketInstance;
@@ -18,6 +25,7 @@ function logActionFrontend(entity, message) {
     }
     fullMessage = `[${getTimeStamp()}] ${entity} ${message}`;
     io.emit("log", fullMessage);
+    fs.appendFileSync(frontendLogPath, fullMessage + "\n");
 }
 
-module.exports = { setLoggerSocketIO, logActionFrontend };
+module.exports = { setLoggerSocketIO, logActionFrontend, frontendLogPath };

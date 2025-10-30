@@ -1,13 +1,14 @@
 // server.js
 const express = require("express");
 const dotenv = require("dotenv");
-const connectDB = require("./config/db");
+const connectDB = require("./config/mongooseDb");
 const http = require("http")
 const { Server } = require("socket.io");
 const { setGridSocketIO } = require("./sockets/gridSocket");
 const { setLoggerSocketIO } = require("./sockets/loggerSocket");
-const environmentRoutes = require("./routes/environmentRoutes");
-const entityRoutes = require("./routes/entityRoutes");
+const environmentRoutes = require("./routes/api/environmentRoutes");
+const entityRoutes = require("./routes/api/entityRoutes");
+const { logBackend } = require("./utils/logger");
 
 dotenv.config();
 const app = express();
@@ -34,18 +35,21 @@ app.use((req, res, next) => {
 // mount API routes
 app.use("/api/environment", environmentRoutes);
 app.use("/api/entities", entityRoutes);
+// mount webhook routes
+const s3WebhookRouter = require("./routes/webhooks/s3Webhook")(io);
+app.use("/webhooks/s3", s3WebhookRouter);
 
 io.on("connection", (socket) => {
-    console.log("Frontend connected");
+    logBackend("Frontend connected");
 
     socket.on("disconnect", () => {
-        console.log("Frontend disconnected");
+        logBackend("Frontend disconnected");
     });
 });
 
 connectDB().then(async () => {
-    console.log("Database connected successfully");
+    logBackend("Database connected successfully");
 });
 
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+server.listen(PORT, () => logBackend(`Server running on port ${PORT}`));

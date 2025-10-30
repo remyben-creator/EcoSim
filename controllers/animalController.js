@@ -3,6 +3,7 @@ const Animal = require("../models/Animal");
 const { logActionFrontend } = require("../sockets/loggerSocket");
 const Plant = require("../models/Plant");
 const { sendGridUpdate } = require("../sockets/gridSocket");
+const { logBackend, logBackendError } = require("../utils/logger");
 
 //
 // create a new animal (of any type)
@@ -151,8 +152,8 @@ async function hungryBFS(animal, target, gridSize = 5) {
     // // Only log for rabbit named "1"
     // const debug = animal.species === "rabbit" && animal.name === "1";
 
-    // if (debug) console.log(`🐇 [hungryBFS] Starting BFS for rabbit '${animal.name}' looking for '${target}'...`);
-    // if (debug) console.log(`Current position: (${animal.position.x}, ${animal.position.y})`);
+    // if (debug) logBackend(`🐇 [hungryBFS] Starting BFS for rabbit '${animal.name}' looking for '${target}'...`);
+    // if (debug) logBackend(`Current position: (${animal.position.x}, ${animal.position.y})`);
 
     const queue = [{ position: animal.position, distance: 0 }];
     const visited = new Set();
@@ -174,14 +175,14 @@ async function hungryBFS(animal, target, gridSize = 5) {
     const targetPositions = new Set(targets.map(t => `${t.position.x},${t.position.y}`));
 
     // if (debug) {
-    //     console.log(`Found ${targets.length} potential targets:`);
-    //     console.log([...targetPositions]);
+    //     logBackend(`Found ${targets.length} potential targets:`);
+    //     logBackend([...targetPositions]);
     // }
 
     // Check if animal is already on a target
     const animalPosKey = `${animal.position.x},${animal.position.y}`;
     if (targetPositions.has(animalPosKey)) {
-        // if (debug) console.log(`🐇 Rabbit '${animal.name}' is already on a target!`);
+        // if (debug) logBackend(`🐇 Rabbit '${animal.name}' is already on a target!`);
         return -1;
     }
 
@@ -193,7 +194,7 @@ async function hungryBFS(animal, target, gridSize = 5) {
         visited.add(posKey);
 
         // if (debug) {
-        //     console.log(`Visiting: (${current.position.x}, ${current.position.y}), distance = ${current.distance}`);
+        //     logBackend(`Visiting: (${current.position.x}, ${current.position.y}), distance = ${current.distance}`);
         // }
 
         // Found a target
@@ -209,8 +210,8 @@ async function hungryBFS(animal, target, gridSize = 5) {
             }
 
             // if (debug) {
-            //     console.log(`🎯 Target found at (${current.position.x}, ${current.position.y})`);
-            //     console.log(`dx=${dx}, dy=${dy}, chosen direction=${direction === 0 ? "North" : direction === 1 ? "East" : direction === 2 ? "South" : "West"}`);
+            //     logBackend(`🎯 Target found at (${current.position.x}, ${current.position.y})`);
+            //     logBackend(`dx=${dx}, dy=${dy}, chosen direction=${direction === 0 ? "North" : direction === 1 ? "East" : direction === 2 ? "South" : "West"}`);
             // }
 
             return direction;
@@ -229,18 +230,18 @@ async function hungryBFS(animal, target, gridSize = 5) {
                         distance: current.distance + 1
                     });
                     // if (debug) {
-                    //     console.log(`Queueing new position: (${newX}, ${newY})`);
+                    //     logBackend(`Queueing new position: (${newX}, ${newY})`);
                     // }
                 }
             } 
             // else if (debug) {
-            //     console.log(`Skipping out-of-bounds: (${newX}, ${newY})`);
+            //     logBackend(`Skipping out-of-bounds: (${newX}, ${newY})`);
             // }
         }
     }
 
     const randomDir = Math.floor(Math.random() * 4);
-    // if (debug) console.log(`⚠️ No targets found — choosing random direction: ${randomDir}`);
+    // if (debug) logBackend(`⚠️ No targets found — choosing random direction: ${randomDir}`);
     return randomDir;
 }
 
@@ -306,7 +307,7 @@ async function addRabbit(req,res) {
 
         res.status(200).json({ message: "Rabbit added successfully."})
     } catch (error) {
-        console.error("Error adding rabbit: ", error);
+        logBackendError("Error adding rabbit: ", error);
         res.status(500).json({ error: "Failed to add rabbit: " + error.message});
     }
 }
@@ -319,7 +320,7 @@ async function getRabbit(req,res) {
 
         res.status(200).json({ message: "Rabbits retreived successfully."});
     } catch (error) {
-        console.error("Error retreiving rabbits: ", error);
+        logBackendError("Error retreiving rabbits: ", error);
         res.status(500).json({error: "Failed to retreive rabbits: " + error.message });
     }
 }
@@ -334,7 +335,7 @@ async function deleteRabbit(req,res) {
 
         res.status(200).json({ message: "Rabbit deleted successfully."});
     } catch (error) {
-        console.error("Error deleting rabbit: ", error);
+        logBackendError("Error deleting rabbit: ", error);
         res.status(500).json({ error: "Failed to delete rabbit: " + error.message });
     }
 }
@@ -347,7 +348,7 @@ async function feedRabbit(req,res) {
         
         res.status(200).json({ message: "Rabbit fed successfully."});
     } catch (error) {
-        console.error("Error feeding rabbit: ", error);
+        logBackendError("Error feeding rabbit: ", error);
         res.status(500).json({ error: "Failed to feed rabbit: " + error.message });
     }
 }
@@ -356,14 +357,13 @@ async function feedRabbit(req,res) {
 async function addFox(req,res) {
     try {
         const { gridSize } = req.body;
-        console.log(gridSize)
         await createAnimal("Added", "fox", gridSize, true);
 
         await sendGridUpdate(gridSize);
 
         res.status(200).json({ message: "Fox added successfully."})
     } catch (error) {
-        console.error("Error adding fox: ", error);
+        logBackendError("Error adding fox: ", error);
         res.status(500).json({ error: "Failed to add fox: " + error.message});
     }
 }
@@ -376,7 +376,7 @@ async function getFox(req,res) {
 
         res.status(200).json({ message: "Foxes retreived successfully."});
     } catch (error) {
-        console.error("Error retreiving foxes: ", error);
+        logBackendError("Error retreiving foxes: ", error);
         res.status(500).json({error: "Failed to retreive foxes: " + error.message });
     }
 }
@@ -391,7 +391,7 @@ async function deleteFox(req,res) {
 
         res.status(200).json({ message: "Fox deleted successfully."});
     } catch (error) {
-        console.error("Error deleting fox: ", error);
+        logBackendError("Error deleting fox: ", error);
         res.status(500).json({ error: "Failed to delete fox: " + error.message });
     }
 }
@@ -404,7 +404,7 @@ async function feedFox(req,res) {
         
         res.status(200).json({ message: "Fox fed successfully."});
     } catch (error) {
-        console.error("Error feeding fox: ", error);
+        logBackendError("Error feeding fox: ", error);
         res.status(500).json({ error: "Failed to feed fox: " + error.message });
     }
 }

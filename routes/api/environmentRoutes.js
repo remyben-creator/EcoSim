@@ -1,5 +1,6 @@
+// routes/api/environmentRoutes.js
 const express = require("express");
-const { resetEcosystem, startSimulation, pauseSimulation, getEnvironment } = require("../controllers/environmentController");
+const { resetEcosystem, startSimulation, pauseSimulation, getEnvironment } = require("../../controllers/environmentController");
 
 const router = express.Router();
 

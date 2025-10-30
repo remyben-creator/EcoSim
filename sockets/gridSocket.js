@@ -1,6 +1,7 @@
 // services/socketService.js
 const Plant = require("../models/Plant");
 const Animal = require("../models/Animal");
+const { logBackend, logBackendError } = require("../utils/logger");
 
 // socket setup
 let io;
@@ -16,9 +17,9 @@ async function sendGridUpdate(gridSize) {
         const animals = await Animal.find({ alive: true });
         
         io.emit("gridUpdate", { plants, animals, gridSize });
-        console.log("Grid update sent to frontend");
+        logBackend("Grid update sent to frontend");
     } catch (error) {
-        console.error("Error sending grid update:", error);
+        logBackendError("Error sending grid update:", error);
     }
 }
 
