@@ -6,22 +6,24 @@ A Full-Stack Ecosystem Simulation for Learning Modern Web Infrastructure
 
 EcoSim is an educational, full-stack simulation that uses an ecosystem metaphor to explore how real-world web applications, databases, and backend services interact.
 
-Every design decision in this project was made as an exercise in learning the tech stack — from database modeling and backend logic to event-driven architecture and system orchestration.
+Every design decision in this project was made as an exercise in learning the tech stack; from database modeling and backend logic to event-driven architecture and system orchestration.
 
-Rather than building a traditional CRUD app, EcoSim transforms backend and database concepts into living entities: plants, rabbits, and foxes, each representing a core layer of modern software systems.
+Rather than building a traditional CRUD app, EcoSim transforms backend and database concepts into living entities: plants, rabbits, and foxes, each representing a core layer of modern software systems. 
+
+The simulation logic does not represent a living ecosystem very well! The purpose was to develop a full-stack application, not to run tests on a simulation.
 
 ## Conceptual Mapping
-Ecosystem Element	Represents in Real Systems	What You Learn
-🌱 Grass (Plants)	MongoDB Documents	CRUD operations, data modeling, and query/update cycles
-🐇 Rabbits (Herbivores)	Node.js Services / Backend Logic	How backend processes consume and mutate stored data
-🦊 Foxes (Carnivores)	Controllers / Advanced Services	Dependency management, multi-service orchestration
-Energy / Hunger	Application State Management	Tracking runtime variables, session data, persistence
-Simulation Tick	Event Loop / API Trigger	Timed execution, batch processing, and atomic updates
-Environment	Database + Server Infrastructure	How Node, MongoDB, and optional cloud services interact
-Reproduction / Death	Lifecycle Hooks / Metrics / Logging	Monitoring, debugging, and lifecycle events
-Population Dynamics	Scaling / Load Management	Horizontal scaling, resource contention, and feedback loops
-Predator–Prey Interactions	API Dependencies / Service Chaining	Multi-layered queries, inter-service communication
-User Interactions	Frontend Triggers / Webhooks	How external inputs affect system state dynamically
+### Ecosystem Element	Represents in Real Systems	What You Learn
+- 🌱 Grass (Plants)	MongoDB Documents:	CRUD operations, data modeling, and query/update cycles
+- 🐇 Rabbits (Herbivores)	Node.js Services / Backend Logic:	How backend processes consume and mutate stored data
+- 🦊 Foxes (Carnivores)	Controllers: / Advanced Services	Dependency management, multi-service orchestration
+- Energy / Hunger	Application State Management:	Tracking runtime variables, session data, persistence
+- Simulation Tick	Event Loop / API Trigger:	Timed execution, batch processing, and atomic updates
+- Environment	Database + Server Infrastructure:	How Node, MongoDB, and optional cloud services interact
+- Reproduction / Death	Lifecycle Hooks / Metrics / Logging	Monitoring, debugging, and lifecycle events
+- Population Dynamics	Scaling / Load Management:	Horizontal scaling, resource contention, and feedback loops
+- Predator–Prey Interactions:	API Dependencies / Service Chaining	Multi-layered queries, inter-service communication
+- User Interactions	Frontend API Triggers / Webhooks:	How external inputs affect system state dynamically
 Core Architecture
 ## 1. MongoDB (Grass Layer)
 
@@ -31,7 +33,7 @@ File: /models/Plant.js → Blueprint defining plant schema & behavior
 
 File: /controllers/PlantController.js → Manager handling plant CRUD operations and simulation interactions
 
-Learning Goals:
+### Learning Goals:
 
 Practice CRUD operations
 
@@ -67,13 +69,13 @@ Simulate how APIs aggregate and transform data
 
 ## 4. Simulation Engine (Ticks)
 
-Each tick is a simulation cycle — a cron-like event that updates all entities in order:
+Each tick is a simulation cycle — an event that updates all entities in order: 
 
 Grass grows.
 
-Rabbits eat and move.
+Rabbits eat and move. (BFS food finding when hungry)
 
-Foxes hunt.
+Foxes hunt. (BFS when hungry)
 
 States are persisted to MongoDB.
 
@@ -99,8 +101,6 @@ Grass regeneration mimics data lifecycle and updates.
 
 Fox predation mirrors dependency resolution and scaling limits.
 
-Random mutations mimic errors, retries, and resilience.
-
 ## Technical Components
 ### Backend
 
@@ -108,9 +108,11 @@ Node.js / Express for simulation orchestration and API endpoints
 
 MongoDB for persistent data storage and entity state
 
-Webhooks / Cron Triggers for external or periodic events
+Socket.IO (Real-Time Layer) for live updates between backend and frontend  
 
-MinIO Integration (optional) for event-driven uploads and server notifications
+Webhooks for external or periodic events
+
+MinIO Integration for event-driven uploads and server notifications
 
 ### Frontend 
 
@@ -128,7 +130,8 @@ Logging and console monitoring for educational observability
 Event-driven extensions using MinIO webhooks
 Designed for experimentation, not perfection
 
-## MinIO / AWS S3 Integration – The simulation hooks directly into cloud-like storage events. When new data (e.g., simulation files or run logs) is uploaded, MinIO sends a webhook to the Express backend (/webhooks/s3), automatically triggering ecosystem updates or responses.
+## MinIO / AWS S3 Integration
+The simulation hooks directly into cloud-like storage events. When new data (e.g., simulation files or run logs) is uploaded, MinIO sends a webhook to the Express backend (/webhooks/s3), automatically triggering ecosystem updates or responses.
 
 This mirrors real-world event-driven architectures, where cloud storage changes notify backend systems to react — for example, ingesting data, running analysis, or scaling services.
 
@@ -138,14 +141,13 @@ In the simulation metaphor, these webhooks behave like environmental disturbance
 
 ## Setup & Run
 ### 1. Clone the repo
-git clone https://github.com/yourname/EcoSim.git
+git clone https://github.com/remyben-creator/EcoSim.git
 cd EcoSim
 
 ### 2. Install dependencies
 npm install
 
 ### 3. Run MongoDB locally or via Docker
-mongod --dbpath ./data
 
 ### 4. Start the backend
 npm run dev
@@ -153,7 +155,9 @@ npm run dev
 ### 5. (Optional) Start the frontend or visualization UI
 npm run dev:frontend
 
-Future Directions
+### 6. (Optional) Set up MinIO for Webhook Integration
+
+## Future Directions
 
 Add more species (microservice expansion)
 
@@ -163,7 +167,7 @@ Visualize metrics (Grafana-like dashboards)
 
 Map population density to scaling behaviors
 
-Expand state persistence across sessions
+Random mutations mimic errors, retries, and resilience.
 
 ## Author’s Note
 
