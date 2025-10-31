@@ -1,2 +1,82 @@
-[10:46:31] Database  reset
-[10:46:31] Ecosystem  initialized
+[08:00:34] Database  reset
+[08:00:34] Ecosystem  initialized
+[08:00:36] Grass  added
+[08:00:37] Grass  added
+[08:00:39] Grass:  {
+  position: { x: 2, y: 3 },
+  _id: new ObjectId('6904a4e280943e1bd23688a7'),
+  species: 'grass',
+  nutrients: 5,
+  alive: true,
+  createdAt: 2025-10-31T12:00:34.539Z,
+  updatedAt: 2025-10-31T12:00:34.539Z,
+  __v: 0
+},{
+  position: { x: 0, y: 2 },
+  _id: new ObjectId('6904a4e280943e1bd23688a9'),
+  species: 'grass',
+  nutrients: 5,
+  alive: true,
+  createdAt: 2025-10-31T12:00:34.540Z,
+  updatedAt: 2025-10-31T12:00:34.540Z,
+  __v: 0
+},{
+  position: { x: 0, y: 1 },
+  _id: new ObjectId('6904a4e280943e1bd23688ab'),
+  species: 'grass',
+  nutrients: 5,
+  alive: true,
+  createdAt: 2025-10-31T12:00:34.541Z,
+  updatedAt: 2025-10-31T12:00:34.541Z,
+  __v: 0
+},{
+  position: { x: 4, y: 1 },
+  _id: new ObjectId('6904a4e280943e1bd23688ad'),
+  species: 'grass',
+  nutrients: 5,
+  alive: true,
+  createdAt: 2025-10-31T12:00:34.541Z,
+  updatedAt: 2025-10-31T12:00:34.541Z,
+  __v: 0
+},{
+  position: { x: 0, y: 0 },
+  _id: new ObjectId('6904a4e280943e1bd23688af'),
+  species: 'grass',
+  nutrients: 5,
+  alive: true,
+  createdAt: 2025-10-31T12:00:34.542Z,
+  updatedAt: 2025-10-31T12:00:34.542Z,
+  __v: 0
+},{
+  position: { x: 4, y: 3 },
+  _id: new ObjectId('6904a4e480943e1bd23688c1'),
+  species: 'grass',
+  nutrients: 5,
+  alive: true,
+  createdAt: 2025-10-31T12:00:36.657Z,
+  updatedAt: 2025-10-31T12:00:36.657Z,
+  __v: 0
+},{
+  position: { x: 1, y: 1 },
+  _id: new ObjectId('6904a4e580943e1bd23688c5'),
+  species: 'grass',
+  nutrients: 5,
+  alive: true,
+  createdAt: 2025-10-31T12:00:37.549Z,
+  updatedAt: 2025-10-31T12:00:37.549Z,
+  __v: 0
+}
+[08:00:47] Simulation started
+[08:00:48] Rabbit 4 ate grass
+[08:00:48] Simulation tick  executed
+[08:00:49] Rabbit 4 ate grass
+[08:00:49] Rabbit 2 ate grass
+[08:00:49] Rabbit 1 ate grass
+[08:00:49] Fox 1 ate Rabbit 5
+[08:00:49] rabbit5 died
+[08:00:49] Fox 1 gained 5 energy
+[08:00:49] Simulation tick  executed
+[08:00:50] rabbit3  is hungry!
+[08:00:50] Rabbit 4 ate grass
+[08:00:50] Simulation tick  executed
+[08:00:50] Simulation paused

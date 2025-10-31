@@ -139,23 +139,10 @@ The integration was implemented and tested using MinIO’s notify_webhook config
 
 In the simulation metaphor, these webhooks behave like environmental disturbances or external stimuli — external data “dropping into the ecosystem” and affecting its state.
 
-## Setup & Run
-### 1. Clone the repo
-git clone https://github.com/remyben-creator/EcoSim.git
-cd EcoSim
+## Images
 
-### 2. Install dependencies
-npm install
-
-### 3. Run MongoDB locally or via Docker
-
-### 4. Start the backend
-npm run dev
-
-### 5. (Optional) Start the frontend or visualization UI
-npm run dev:frontend
-
-### 6. (Optional) Set up MinIO for Webhook Integration
+![Frontend](screenshots/frontend-ss.png)
+![MinIO](screenshots/minio-ss.png)
 
 ## Future Directions
 
