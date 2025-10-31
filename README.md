@@ -130,7 +130,7 @@ Logging and console monitoring for educational observability
 Event-driven extensions using MinIO webhooks
 Designed for experimentation, not perfection
 
-## MinIO / AWS S3 Integration
+### MinIO / AWS S3 Integration
 The simulation hooks directly into cloud-like storage events. When new data (e.g., simulation files or run logs) is uploaded, MinIO sends a webhook to the Express backend (/webhooks/s3), automatically triggering ecosystem updates or responses.
 
 This mirrors real-world event-driven architectures, where cloud storage changes notify backend systems to react — for example, ingesting data, running analysis, or scaling services.
