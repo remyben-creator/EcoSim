@@ -159,4 +159,3 @@ Random mutations mimic errors, retries, and resilience.
 ## Author’s Note
 
 This project is a learning sandbox.
-It’s a living metaphor for how modern software systems breathe, interact, and evolve.
