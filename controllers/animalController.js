@@ -41,7 +41,7 @@ async function createAnimal(name, species, gridSize, api = false) {
 //
 
 // Move animal to a new position
-async function move(animalId, gridSize = 5) {
+async function move(animalId, gridSize = 5, removeAnimalFn = removeAnimal) {
     const animal = await Animal.findById(animalId);
     if (!animal) return null;
 
@@ -76,22 +76,22 @@ async function move(animalId, gridSize = 5) {
 
     if (animal.energy <= 0) {
         animal.alive = false;
-        await removeAnimal(animalId);
+        await removeAnimalFn(animalId);
     } else {
         return animal.save();
     }
 }
 
 // Move animal to a new position with hungry search logic
-async function moveWithHunger(animalId, gridSize = 5) {
+async function moveWithHunger(animalId, gridSize = 5, removeAnimalFn = removeAnimal) {
     const animal = await Animal.findById(animalId);
     if (!animal) return null;
 
     let direction;
     if (animal.species === "rabbit") {
-        direction = hungryBFS(animal, "grass", gridSize);
+        direction = await hungryBFS(animal, "grass", gridSize);
     } else if (animal.species === "fox") {
-        direction = hungryBFS(animal, "rabbit", gridSize);
+        direction = await hungryBFS(animal, "rabbit", gridSize);
     } else {
         direction = Math.floor(Math.random() * 4);
     }
@@ -123,7 +123,7 @@ async function moveWithHunger(animalId, gridSize = 5) {
 
     if (animal.energy <= 0) {
         animal.alive = false;
-        await removeAnimal(animalId);
+        await removeAnimalFn(animalId);
     } else {
         return animal.save();
     }
@@ -261,7 +261,11 @@ async function removeAnimal(animalId, api = false) {
     return await animal.die();
 }
 
-async function ageOneTick(animalId, energyLoss = 1) {
+//
+// Aging
+//
+
+async function ageOneTick(animalId, energyLoss = 1, removeAnimalFn = removeAnimal) {
     const animal = await Animal.findById(animalId);
     if (!animal) return null;
 
@@ -269,7 +273,7 @@ async function ageOneTick(animalId, energyLoss = 1) {
 
     if (animal.energy <= 0) {
         animal.alive = false;
-        await removeAnimal(animalId);
+        await removeAnimalFn(animalId);
     } else {
         return animal.save();
     }
@@ -411,9 +415,13 @@ async function feedFox(req,res) {
 
 module.exports = {
     createAnimal,
+    move,
+    moveWithHunger,
     moveAll,
+    ageOneTick,
     ageOneTickAll,
     removeAnimal,
+    feedAnimal,
     addRabbit,
     addFox,
     getRabbit,

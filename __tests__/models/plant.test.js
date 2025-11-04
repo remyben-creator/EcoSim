@@ -1,5 +1,5 @@
-// __tests__/plant.test.js
-const Plant = require("../models/Plant");
+// __tests__/models/plant.test.js
+const Plant = require("../../models/Plant");
 const mongoose = require("mongoose");
 const { MongoMemoryServer } = require("mongodb-memory-server");
 

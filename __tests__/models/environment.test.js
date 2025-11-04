@@ -1,5 +1,5 @@
-// __tests__/environment.test.js
-const Environment = require("../models/Environment");
+// __tests__/models/environment.test.js
+const Environment = require("../../models/Environment");
 const mongoose = require("mongoose");
 const { MongoMemoryServer } = require("mongodb-memory-server");
 

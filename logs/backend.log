@@ -1,15 +1,3 @@
-[08:00:34] Uploaded frontend.log for run run_2025-10-31T12-00-34-481Z
-[08:00:34] Uploaded plants.json for run run_2025-10-31T12-00-34-481Z
-[08:00:34] Uploaded animals.json for run run_2025-10-31T12-00-34-481Z
-[08:00:34] Uploaded environment.json for run run_2025-10-31T12-00-34-481Z
-[08:00:34] Grid update sent to frontend
-[08:00:36] Grid update sent to frontend
-[08:00:37] Grid update sent to frontend
-[08:00:47] Starting simulation loop...
-[08:00:48] Grid update sent to frontend
-[08:00:48] Simulation tick executed.
-[08:00:49] Grid update sent to frontend
-[08:00:49] Simulation tick executed.
-[08:00:50] Grid update sent to frontend
-[08:00:50] Simulation tick executed.
-[08:00:50] Simulation loop stopped.
+[10:07:01] Upload failed for plants.json:
+[10:07:01] Upload failed for animals.json:
+[10:07:01] Upload failed for environment.json:
